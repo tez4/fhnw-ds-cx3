@@ -1,6 +1,6 @@
 # Automatische Optimierung von Produktbildern
 
-<img align="right" height="100" src="/assets/fhnw-logo.svg">
+<img align="right" height="50" src="/assets/fhnw-logo.svg">
 
 **Semester:** 7 (teilzeit)
 
