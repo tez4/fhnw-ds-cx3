@@ -15,12 +15,32 @@
 - [Automatische Optimierung von Produktbildern](#automatische-optimierung-von-produktbildern)
   - [Inhaltsverzeichnis](#inhaltsverzeichnis)
   - [Lösung](#lösung)
+    - [Erste Bildpaare](#erste-bildpaare)
+    - [Visualisierungen mit Normalen und Distanz zur Kamera](#visualisierungen-mit-normalen-und-distanz-zur-kamera)
   - [Meeting Notizen](#meeting-notizen)
     - [18.09.2023](#18092023)
 
 ## Lösung
 
-Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, welche später das Modell-Training unterstützen, indem sie dem Modell das 3-Dimensionale Verständnis erleichtern. Dass dies das Training erleichtert, ist zumindest die momentane Hypothese. Im Bild unterhalb sieht man zuoberst das schmutzige Bild, danach eine Visualisierung der Normalen, dann eine Visualisierung der Distanz zur Kamera und als Letztes das Produktbild. Um die Visualisierungen zu generieren habe ich zuerst ein benutzerdefinertes Shader Node Setup erstellt und füge dieses allen Materialien im Python Script als `Surface` hinzu.
+Folgende Dinge müssen noch im Detail dokumentiert werden:
+
+- Entscheidung Blender zu Nutzen
+- grundsätzlicher Aufbau der Blender Image generation
+- Beschreibung verschiedener Typen von Elementen in Blender (HDRI, Objekt, Textur)
+- Beschreibung Entscheidung Auswahl von Cycles Blender renderer
+- Beschreibung verschiedener Arten von Randomness, welche bei Generation hinzugefügt wurden
+- Beschreibung was Bilder noch realistischer machen könnte (Grain, Blur, Focus, Surface Imperfections)
+- Probleme und Lösungen bei Blender abstürzen
+
+### Erste Bildpaare
+
+Bei dem Experiment, welches auf folgendem Bild dargestellt wird, konnte ich zum ersten Mal Bildpaare von verschiedenen Pflanzen generieren. Es fällt auf, dass die Pflanze bei beiden Bildern des Bildpaares in der gleichen Position mit derselben Ausrichtung ist. Dies hilft, um dem Modell das Training zu erleichtern. Die Kamera zeigt auch immer auf die Pflanze und hat den richtigen Zoom eingestellt, damit die Pflanze einen relativ grossen Teil des Bildes ausfüllt und trotzdem ganz ins Bild passt. Beim zweiten Bild fällt auf, dass der Raum um das Produkt herum hier noch nicht fertig modelliert ist.
+
+![Experiment 19](images/experiment_19.jpg "Experiment 19")
+
+### Visualisierungen mit Normalen und Distanz zur Kamera
+
+Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, welche später das Modell-Training unterstützen, indem sie dem Modell das 3-Dimensionale Verständnis erleichtern. Dass dies das Training erleichtert, ist zumindest die momentane Hypothese. Im Bild unterhalb sieht man zuoberst das schmutzige Bild, danach eine Visualisierung der Normalen, dann eine Visualisierung der Distanz zur Kamera und als Letztes das Produktbild. Um die Visualisierungen zu generieren habe ich zuerst ein benutzerdefiniertes Shader Node Setup erstellt und füge dieses allen Materialien im Python Script als `Surface` hinzu.
 
 ![Experiment 47](images/experiment_47.jpg "Experiment 47")
 
