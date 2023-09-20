@@ -20,6 +20,10 @@
 
 ## Lösung
 
+Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, welche später das Modell-Training unterstützen, indem sie dem Modell das 3-Dimensionale Verständnis erleichtern. Dass dies das Training erleichtert, ist zumindest die momentane Hypothese. Im Bild unterhalb sieht man zuoberst das schmutzige Bild, danach eine Visualisierung der Normalen, dann eine Visualisierung der Distanz zur Kamera und als Letztes das Produktbild. Um die Visualisierungen zu generieren habe ich zuerst ein benutzerdefinertes Shader Node Setup erstellt und füge dieses allen Materialien im Python Script als `Surface` hinzu.
+
+![Experiment 47](images/experiment_47.jpg "Experiment 47")
+
 ## Meeting Notizen
 
 ### 18.09.2023

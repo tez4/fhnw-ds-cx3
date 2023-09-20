@@ -57,4 +57,7 @@
     ],
     "peacock.color": "#42a883",
     "prettier.requireConfig": true,
+    "markdownlint.config": {
+        "MD033": false
+    }
 }
