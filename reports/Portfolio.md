@@ -14,13 +14,14 @@
 
 - [Automatische Optimierung von Produktbildern](#automatische-optimierung-von-produktbildern)
   - [Inhaltsverzeichnis](#inhaltsverzeichnis)
-  - [Lösung](#lösung)
+  - [Experimentenreihe](#experimentenreihe)
     - [Erste Bildpaare](#erste-bildpaare)
     - [Visualisierungen mit Normalen und Distanz zur Kamera](#visualisierungen-mit-normalen-und-distanz-zur-kamera)
   - [Meeting Notizen](#meeting-notizen)
-    - [18.09.2023](#18092023)
+    - [18.09.2023 - Kickoff und Definition der Lernziele](#18092023---kickoff-und-definition-der-lernziele)
+    - [28.09.2023 - Finalisierung der Lernziele](#28092023---finalisierung-der-lernziele)
 
-## Lösung
+## Experimentenreihe
 
 Folgende Dinge müssen noch im Detail dokumentiert werden:
 
@@ -46,7 +47,7 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 ## Meeting Notizen
 
-### 18.09.2023
+### 18.09.2023 - Kickoff und Definition der Lernziele
 
 Meeting findet direkt nach Challenge X launch statt. Folgende Dinge werden besprochen:
 
@@ -62,3 +63,12 @@ Trainingsdaten generieren:
 - JSON Datei mit Metadaten soll für jedes Bild zusätzlich generiert werden.
 - Tiefeninformation des Bildes kann zusätzlich gespeichert werden.
 - Segmentierungsmaske vom Produkt kann zusätzlich gespeichert werden.
+
+### 28.09.2023 - Finalisierung der Lernziele
+
+Beim Meeting waren Joël und Adrian anwesend.
+
+- Die definierten Lernziele wurden ausdiskutiert, aber nicht mehr angepasst. Für Joël und Adrian passen sie so.
+- Einige Indikatoren der Lernziele sind für Joël noch unklar, Joël wird dafür eine Fragemail an Moritz senden.
+- Adrian bestätigte, dass er nun Zugriff auf die Repositories hat.
+- Die Struktur des Portfolios wurde kurz besprochen, Adrian gab kleine Anpassungsvorschläge, aber grundsätzlich findet er die Struktur in Ordnung.
