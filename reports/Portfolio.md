@@ -20,6 +20,7 @@
   - [Meeting Notizen](#meeting-notizen)
     - [18.09.2023 - Kickoff und Definition der Lernziele](#18092023---kickoff-und-definition-der-lernziele)
     - [28.09.2023 - Finalisierung der Lernziele](#28092023---finalisierung-der-lernziele)
+    - [04.10.2023 - Update zum Trainingsdaten generieren](#04102023---update-zum-trainingsdaten-generieren)
 
 ## Experimentenreihe
 
@@ -72,3 +73,21 @@ Beim Meeting waren Joël und Adrian anwesend.
 - Einige Indikatoren der Lernziele sind für Joël noch unklar, Joël wird dafür eine Fragemail an Moritz senden.
 - Adrian bestätigte, dass er nun Zugriff auf die Repositories hat.
 - Die Struktur des Portfolios wurde kurz besprochen, Adrian gab kleine Anpassungsvorschläge, aber grundsätzlich findet er die Struktur in Ordnung.
+
+### 04.10.2023 - Update zum Trainingsdaten generieren
+
+Beim Meeting waren Adrian, Moritz und Joël anwesend.
+
+Organisatorisch:
+
+- Ab dem nächsten Meeting sollen die Meetings nicht mehr online, sondern in der FHNW stattfinden.
+- Um so viele Bilder zu generieren, braucht es sehr viel GPU Leistung. Moritz organisiert deshalb für ihn und Joël eine Einführung in das Compute-Cluster des i4DS.
+- Nach kurzer Diskussion mit Moritz sind nun die Lernziele definitiv für alle.
+
+Trainingsdaten generieren:
+
+- Die Bilder welche die Textur und das Licht trennen, scheinen allen eher nicht sinnvoll zu sein. Deshalb wird Joël diese weglassen.
+- Joël fragt, ob das Bild mit der Distanz normalisiert werden sollte. Moritz befindet dies als sinnvoll.
+- Das Produktfoto soll noch verbessert werden. Hier soll Joël noch eine Recherche betreiben und experimentieren.
+- Es können mehrere Versionen des Produktfotos gespeichert werden. Dies erlaubt im Modell kreative Ansätze auszuprobieren.
+- Bilder müssen nicht unbedingt im .PNG format gespeichert werden. Hier kann Speicherplatz eingespart werden.
