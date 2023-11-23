@@ -12,5 +12,6 @@
     "test_batch_size": 8,
     "random_horizontal_flip": true,
     "num_workers": 0,
-    "patience": 15
+    "patience": 15,
+    "wandb_api_key": "your_api_key"
 }

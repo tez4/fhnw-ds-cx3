@@ -16,7 +16,7 @@ if __name__ == "__main__":
 
     config["start_time"] = datetime.now().strftime("%d.%m.%Y_%H%M")
 
-    wandb.login()
+    wandb.login(key=config["wandb_api_key"])
     set_seed(42)
 
     wandb_config = {
