@@ -1,0 +1,16 @@
+{
+    "name": "UNet",
+    "dataset": "experiment_95_preprocessed",
+    "is_test_batch": true,
+    "optimizer": "Adam",
+    "lr": 0.0001,
+    "loss": "MSE",
+    "epochs": 15,
+    "image_size": 448,
+    "train_batch_size": 8,
+    "val_batch_size": 8,
+    "test_batch_size": 8,
+    "random_horizontal_flip": true,
+    "num_workers": 0,
+    "patience": 15
+}

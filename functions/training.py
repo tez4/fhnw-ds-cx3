@@ -33,6 +33,7 @@ class Trainer:
         self.val_loader = val_loader
 
         self.best_val_acc = 0.0
+        self.best_val_loss = float('inf')
         self.best_epoch = 0
         self.num_epochs_without_improvement = 0
 
@@ -68,6 +69,7 @@ class Trainer:
 
     def train(self, step):
         self.model.train()
+        running_train_loss = []
         running_train_acc = []
         for i, (inputs, targets, _) in enumerate(self.train_loader):
             if self.config["is_test_batch"] and i > 1:
@@ -81,12 +83,15 @@ class Trainer:
             loss.backward()
             self.optimizer.step()
 
+            running_train_loss.append(loss.item())
             running_train_acc.append(mean_pixel_distance(outputs, targets).mean().item())
 
+        self.train_loss = np.mean(running_train_loss)
         self.train_acc = np.mean(running_train_acc)
 
     def validate(self, step):
         self.model.eval()
+        running_val_loss = []
         running_val_acc = []
         with torch.no_grad():
 
@@ -98,21 +103,29 @@ class Trainer:
 
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
                 outputs = self.model(inputs)
-                _ = self.criterion(outputs, targets)
+                loss = self.criterion(outputs, targets)
 
+                running_val_loss.append(loss.item())
                 running_val_acc.append(mean_pixel_distance(outputs, targets).mean().item())
 
+        self.val_loss = np.mean(running_val_loss)
         self.val_acc = np.mean(running_val_acc)
 
-        if self.val_acc > self.best_val_acc:
-            self.best_val_acc = self.val_acc
+        if self.val_loss < self.best_val_loss:
+            self.best_val_loss = self.val_loss
+            self.num_epochs_without_improvement = 0
             self.best_epoch = step + 1
         else:
             self.num_epochs_without_improvement += 1
 
+        if self.val_acc > self.best_val_acc:
+            self.best_val_acc = self.val_acc
+
     def log_values(self, step):
         wandb.log({
             "epoch": step + 1,
+            "Loss/a_train_loss": self.train_loss,
+            "Loss/b_val_loss": self.val_loss,
             "Acc/a_train_acc": self.train_acc,
             "Acc/b_val_acc": self.val_acc,
         })
@@ -122,6 +135,7 @@ class Trainer:
 
     def finish_training(self, step):
         wandb.log({
+            "Loss/c_best_val_loss": self.best_val_loss,
             "Acc/c_best_val_acc": self.best_val_acc,
         })
 

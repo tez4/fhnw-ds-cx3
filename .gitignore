@@ -3,3 +3,4 @@
 **/__pycache__/**
 /input/**
 /wandb/**
+/config_local.json

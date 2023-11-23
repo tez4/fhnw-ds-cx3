@@ -1,39 +1,30 @@
+import json
 import wandb
 import torch
 import torch.nn as nn
 from models import BaseNet, UNet
+from pathlib import Path
 from datetime import datetime
 from training import set_seed, Trainer
 from dataloader import get_data_loaders
 
 if __name__ == "__main__":
+
+    assert Path("./config_local.json").exists(), "config not found. copy config.json to create config_local.json!"
+    with open("./config_local.json") as f:
+        config = json.load(f)
+
+    config["start_time"] = datetime.now().strftime("%d.%m.%Y_%H%M")
+
     wandb.login()
     set_seed(42)
-
-    config = {
-        "name": "BaseNet",
-        "epochs": 3,
-        "image_size": 512,
-        "train_batch_size": 8,
-        "val_batch_size": 8,
-        "test_batch_size": 8,
-        "dataset": "experiment_93_preprocessed",
-        "lr": 1e-4,
-        "is_test_batch": True,
-        "start_time": datetime.now().strftime("%d.%m.%Y_%H%M"),
-        "optimizer": 'Adam',
-        "random_horizontal_flip": True,
-        "num_workers": 0,
-        "loss": "MSE",
-        "patience": 15,
-    }
 
     wandb_config = {
         'entity': 'tez4',
         "project": "cx3",
         "group": "first_test",
         "tags": ["first_test"],
-        "table_images": [1, 2],
+        "table_images": [i for i in range(118, 131)],
     }
 
     if config["loss"] == "MSE":
@@ -41,7 +32,7 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError()
 
-    model = BaseNet(3, 8)
+    model = UNet(3, 8)
     # model = torch.load("./models/all/model_small CNN_13.04.2023_0946.pth", map_location=torch.device('cpu'))
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])

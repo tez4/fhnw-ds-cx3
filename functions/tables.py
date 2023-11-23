@@ -48,7 +48,7 @@ def create_examples_tables(model, data_loader, device, epoch, image_names, table
 
         for i in range(array_inputs.shape[0]):
 
-            if not image_path[i].endswith(tuple(map(str, image_names))):
+            if image_path[i].endswith(tuple(map(str, image_names))) is False:
                 continue
 
             input_image = Image.fromarray(np.transpose(array_inputs[i], (1, 2, 0)).astype('uint8'), mode='RGB')
