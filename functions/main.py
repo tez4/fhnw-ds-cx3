@@ -12,19 +12,19 @@ if __name__ == "__main__":
 
     config = {
         "name": "BaseNet",
-        "epochs": 2,
+        "epochs": 3,
         "image_size": 512,
         "train_batch_size": 8,
         "val_batch_size": 8,
         "test_batch_size": 8,
         "dataset": "experiment_93_preprocessed",
         "lr": 1e-4,
-        "is_test_batch": False,
+        "is_test_batch": True,
         "start_time": datetime.now().strftime("%d.%m.%Y_%H%M"),
         "optimizer": 'Adam',
         "random_horizontal_flip": True,
         "num_workers": 0,
-        "loss": "CE",
+        "loss": "MSE",
         "patience": 15,
     }
 
@@ -33,15 +33,15 @@ if __name__ == "__main__":
         "project": "cx3",
         "group": "first_test",
         "tags": ["first_test"],
-        "table_images": [86, 87],
+        "table_images": [1, 2],
     }
 
-    if config["loss"] == "CE":
-        loss_func = nn.CrossEntropyLoss()
+    if config["loss"] == "MSE":
+        loss_func = nn.MSELoss()
     else:
         raise NotImplementedError()
 
-    model = BaseNet(3, 1)
+    model = BaseNet(3, 8)
     # model = torch.load("./models/all/model_small CNN_13.04.2023_0946.pth", map_location=torch.device('cpu'))
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])

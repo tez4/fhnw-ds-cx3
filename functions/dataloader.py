@@ -41,17 +41,28 @@ class SegmentationDataset(Dataset):
 
     def __getitem__(self, idx):
         input_image = Image.open(f"{self.image_paths[idx]}/input.png")
-        output_image = Image.open(f"{self.image_paths[idx]}/distance.png")
+        distance_image = Image.open(f"{self.image_paths[idx]}/distance.png")
+        mask_image = Image.open(f"{self.image_paths[idx]}/mask.png")
+        normals_image = Image.open(f"{self.image_paths[idx]}/normals.png")
+        output_1_image = Image.open(f"{self.image_paths[idx]}/output_1.png")
 
         seed = random.randint(0, 2**32)
 
         if self.transform:
             self._set_seed(seed)
-            input_image = self.transform(input_image)
+            input_array = self.transform(input_image)
             self._set_seed(seed)
-            output_image = self.transform(output_image)
+            distance_array = self.transform(distance_image)
+            self._set_seed(seed)
+            mask_array = self.transform(mask_image)
+            self._set_seed(seed)
+            normals_array = self.transform(normals_image)
+            self._set_seed(seed)
+            output_1_array = self.transform(output_1_image)
 
-        return input_image, output_image, self.image_paths[idx]
+        output_array = torch.cat((distance_array, mask_array, normals_array, output_1_array), dim=0)
+
+        return input_array, output_array, self.image_paths[idx]
 
 
 def get_data_loaders(config, shuffle):

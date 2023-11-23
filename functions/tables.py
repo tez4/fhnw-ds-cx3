@@ -17,8 +17,14 @@ def create_examples_tables(model, data_loader, device, epoch, image_names, table
             "Name",
             "Input",
             "True Depth",
-            "Predicted Depth",
-            "Accuracy (distance)",
+            "Pred Depth",
+            "True Mask",
+            "Pred Mask",
+            "True Normals",
+            "Pred Normals",
+            "True Output",
+            "Pred Output",
+            "Accuracy",
             "Epoch"
         ]
     )
@@ -48,12 +54,24 @@ def create_examples_tables(model, data_loader, device, epoch, image_names, table
             input_image = Image.fromarray(np.transpose(array_inputs[i], (1, 2, 0)).astype('uint8'), mode='RGB')
             depth_true = Image.fromarray(array_targets[i][0].astype("uint8"), mode='L')
             depth_pred = Image.fromarray(array_outputs[i][0].astype("uint8"), mode='L')
+            mask_true = Image.fromarray(array_targets[i][1].astype("uint8"), mode='L')
+            mask_pred = Image.fromarray(array_outputs[i][1].astype("uint8"), mode='L')
+            normals_true = Image.fromarray(np.transpose(array_targets[i][2:5], (1, 2, 0)).astype("uint8"), mode='RGB')
+            normals_pred = Image.fromarray(np.transpose(array_outputs[i][2:5], (1, 2, 0)).astype("uint8"), mode='RGB')
+            p_1_true = Image.fromarray(np.transpose(array_targets[i][5:], (1, 2, 0)).astype("uint8"), mode='RGB')
+            p_1_pred = Image.fromarray(np.transpose(array_outputs[i][5:], (1, 2, 0)).astype("uint8"), mode='RGB')
 
             table.add_data(
                 image_path[i].split('/')[-1],
                 wandb.Image(input_image),
                 wandb.Image(depth_true),
                 wandb.Image(depth_pred),
+                wandb.Image(mask_true),
+                wandb.Image(mask_pred),
+                wandb.Image(normals_true),
+                wandb.Image(normals_pred),
+                wandb.Image(p_1_true),
+                wandb.Image(p_1_pred),
                 round(pixel_acc[i].item(), 5),
                 epoch
             )
