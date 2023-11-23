@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from models import BaseNet, UNet
 from datetime import datetime
-from training import train_model, set_seed, save_model
+from training import set_seed, Trainer
 from dataloader import get_data_loaders
 
 if __name__ == "__main__":
@@ -17,11 +17,11 @@ if __name__ == "__main__":
         "train_batch_size": 8,
         "val_batch_size": 8,
         "test_batch_size": 8,
-        "dataset": "experiment_95_preprocessed",
+        "dataset": "experiment_93_preprocessed",
         "lr": 1e-4,
         "is_test_batch": False,
         "start_time": datetime.now().strftime("%d.%m.%Y_%H%M"),
-        "optimizer": 'SGD',
+        "optimizer": 'Adam',
         "random_horizontal_flip": True,
         "num_workers": 0,
         "loss": "CE",
@@ -44,19 +44,17 @@ if __name__ == "__main__":
     # model = torch.load("./models/all/model_small CNN_13.04.2023_0946.pth", map_location=torch.device('cpu'))
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
-
     train_loader, val_loader, test_loader = get_data_loaders(config=config, shuffle=True)
 
-    train_model(
-        model=model,
-        optimizer=optimizer,
-        criterion=loss_func,
-        config=config,
-        wandb_config=wandb_config,
-        train_loader=train_loader,
-        val_loader=val_loader,
-    )
+    model_trainer = Trainer(config, wandb_config, model, optimizer, loss_func, train_loader, val_loader)
+    for step in range(config["epochs"]):
+        model_trainer.train(step)
+        model_trainer.validate(step)
+        model_trainer.log_values(step)
 
-    save_model(model, config["name"], config["start_time"])
+        if model_trainer.num_epochs_without_improvement >= config['patience']:
+            print(f'Early stopping after {step + 1} epochs!')
+            break
 
-    wandb.finish()
+    model_trainer.finish_training()
+    model_trainer.save_model()

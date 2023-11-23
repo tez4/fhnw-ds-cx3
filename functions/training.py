@@ -21,141 +21,115 @@ def set_seed(seed=42):
     random.seed(seed)
 
 
-def train_model(model, optimizer, criterion, config, wandb_config, train_loader, val_loader):
+class Trainer:
+    def __init__(self, config, wandb_config, model, optimizer, criterion, train_loader, val_loader):
+        self.config = config
+        self.wandb_config = wandb_config
+        self.model = model
+        self.optimizer = optimizer
+        self.criterion = criterion
+        self.train_loader = train_loader
+        self.val_loader = val_loader
 
-    # find optimizer name
-    if isinstance(optimizer, torch.optim.SGD):
-        optimizer_name = 'SGD'
-    elif isinstance(optimizer, torch.optim.Adam):
-        optimizer_name = 'Adam'
-    else:
-        raise ValueError('unknown optimizer')
+        self.best_val_acc = 0.0
+        self.best_epoch = 0
+        self.num_epochs_without_improvement = 0
 
-    # move to device
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    criterion.to(device)
-    print(f'Selected device: {device}')
+        # find optimizer name
+        if isinstance(optimizer, torch.optim.SGD):
+            optimizer_name = 'SGD'
+        elif isinstance(optimizer, torch.optim.Adam):
+            optimizer_name = 'Adam'
+        else:
+            raise ValueError('unknown optimizer')
 
-    # Initialize wandb
-    config['device'] = device
-    config['optimizer'] = optimizer_name
+        # move to device
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model.to(self.device)
+        self.criterion.to(self.device)
+        print(f'Selected device: {self.device}')
 
-    wandb.init(
-        project=wandb_config['project'],
-        name=f"{config['name']}-{config['epochs']}-epochs-{config['start_time']}",
-        entity=wandb_config['entity'],
-        group=wandb_config['group'],
-        tags=wandb_config["tags"] + (['test-batch'] if config['is_test_batch'] else []),
-        config=config
-    )
+        # Initialize wandb
+        config['device'] = self.device
+        config['optimizer'] = optimizer_name
 
-    # start training loop
-    wandb.watch(model)
-    best_val_acc = 0.0
-    best_epoch = 0
-    num_epochs_without_improvement = 0
-    loop = range(config["epochs"])
-    epoch_loop = tqdm(loop, desc="Epochs", position=0, leave=True)
+        wandb.init(
+            project=wandb_config['project'],
+            name=f"{config['name']}-{config['epochs']}-epochs-{config['start_time']}",
+            entity=wandb_config['entity'],
+            group=wandb_config['group'],
+            tags=wandb_config["tags"] + (['test-batch'] if config['is_test_batch'] else []),
+            config=config
+        )
 
-    for step in epoch_loop:
-        model.train()
-        running_train_acc = 0.0
-        for i, (input, output) in enumerate(train_loader):
-            if config["is_test_batch"] and i > 1:
+        # start training loop
+        wandb.watch(model)
+
+    def train(self, step):
+        self.model.train()
+        running_train_acc = []
+        for i, (input, output) in enumerate(self.train_loader):
+            if self.config["is_test_batch"] and i > 1:
                 break
 
-            input, output = input.to(device), output.to(device)
+            input, output = input.to(self.device), output.to(self.device)
 
-            optimizer.zero_grad()
-            outputs = model(input)
-            loss = criterion(outputs, output)
+            self.optimizer.zero_grad()
+            outputs = self.model(input)
+            loss = self.criterion(outputs, output)
             loss.backward()
-            optimizer.step()
+            self.optimizer.step()
 
-            running_train_acc += mean_pixel_distance(outputs, output).mean().item()
+            running_train_acc.append(mean_pixel_distance(outputs, output).mean().item())
 
-            inner_progress = f"{i+1}/{len(train_loader)}"
-            epoch_loop.set_description(f"Epochs (Batch: {inner_progress})")
-            epoch_loop.refresh()
+        self.train_acc = np.mean(running_train_acc)
 
-        train_acc = running_train_acc / 2 if config["is_test_batch"] else running_train_acc / len(train_loader)
-
-        model.eval()
-        running_val_acc = 0.0
+    def validate(self, step):
+        self.model.eval()
+        running_val_acc = []
         with torch.no_grad():
 
             # log_images(model, config, test_loader, device, step + 1, epoch_confidence_images)
 
-            for i, (input, output) in enumerate(val_loader):
-                if config["is_test_batch"] and i > 1:
+            for i, (input, output) in enumerate(self.val_loader):
+                if self.config["is_test_batch"] and i > 1:
                     break
 
-                input, output = input.to(device), output.to(device)
-                outputs = model(input)
-                loss = criterion(outputs, output)
+                input, output = input.to(self.device), output.to(self.device)
+                outputs = self.model(input)
+                _ = self.criterion(outputs, output)
 
-                running_val_acc += mean_pixel_distance(outputs, output).mean().item()
+                running_val_acc.append(mean_pixel_distance(outputs, output).mean().item())
 
-        val_acc = running_val_acc / 2 if config["is_test_batch"] else running_val_acc / len(val_loader)
+        self.val_acc = np.mean(running_val_acc)
 
-        # if step + 1 in examples_tracking_epochs:
-        #     with torch.no_grad():
-        #         if track_image_count > 0:
-        #             table_binary, table_continuous = create_examples_tables()
-        #             log_examples_tables(
-        #                 table_binary, table_continuous, model, test_loader, device, step + 1, track_image_count
-        #             )
-        #             save_examples_tables(
-        #                 table_binary, table_continuous,
-        #                 f"Training First N Examples/Binary Table Epoch {str(step + 1).zfill(3)}",
-        #                 f"Training First N Examples/Continuous Table Epoch {str(step + 1).zfill(3)}"
-        #             )
+        if self.val_acc > self.best_val_acc:
+            self.best_val_acc = self.val_acc
+            self.best_epoch = step + 1
+        else:
+            self.num_epochs_without_improvement += 1
 
-        #         if len(selected_tracking_images) > 0:
-        #             table_binary, table_continuous = create_examples_tables()
-        #             log_examples_tables(
-        #                 table_binary, table_continuous, model, test_loader, device, step + 1,
-        #                 image_names=selected_tracking_images
-        #             )
-        #             save_examples_tables(
-        #                 table_binary,
-        #                 table_continuous,
-        #                 f"Training Selected Examples/Binary Table Epoch {str(step + 1).zfill(3)}",
-        #                 f"Training Selected Examples/Continuous Table Epoch {str(step + 1).zfill(3)}"
-        #             )
-
+    def log_values(self, step):
         wandb.log({
             "epoch": step + 1,
-            "Acc/a_train_acc": train_acc,
-            "Acc/b_val_acc": val_acc,
+            "Acc/a_train_acc": self.train_acc,
+            "Acc/b_val_acc": self.val_acc,
         })
 
-        print(
-            f"Epoch {step + 1}/{config['epochs']}, \
-    Acc: {round(train_acc, 5)}, Validation Acc: {round(val_acc, 5)}"
-        )
+        print(f"Epoch {step + 1}/{self.config['epochs']}")
+        print(f"Acc: {round(self.train_acc, 5)}, Validation Acc: {round(self.val_acc, 5)}")
 
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
-        else:
-            num_epochs_without_improvement += 1
+    def finish_training(self):
+        wandb.log({
+            "Acc/c_best_val_acc": self.best_val_acc,
+        })
 
-        if num_epochs_without_improvement >= config['patience']:
-            print(f'Early stopping after {step + 1} epochs!')
-            break
+        wandb.finish()
 
-    epoch_loop.close()
+        print(f"FINISHED! Best epoch: {self.best_epoch}, Best Accuracy: {self.best_val_acc}")
 
-    wandb.log({
-        "Acc/c_best_val_acc": best_val_acc,
-    })
-
-    print(f"FINISHED! Best epoch: {best_epoch}, Best Accuracy: {best_val_acc}")
-
-
-def save_model(model, model_name: str, model_time: str, path='./models/'):
-    model.eval()
-    Path(path).mkdir(parents=True, exist_ok=True)
-    torch.save(model, f'{path}model_{model_name}_{model_time}.pth')
-    print('Model saved!')
+    def save_model(self, path='./models/'):
+        self.model.eval()
+        Path(path).mkdir(parents=True, exist_ok=True)
+        torch.save(self.model, f'{path}model_{self.config["name"]}_{self.config["start_time"]}.pth')
+        print('Model saved!')
