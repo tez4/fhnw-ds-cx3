@@ -51,7 +51,7 @@ class SegmentationDataset(Dataset):
             self._set_seed(seed)
             output_image = self.transform(output_image)
 
-        return input_image, output_image
+        return input_image, output_image, self.image_paths[idx]
 
 
 def get_data_loaders(config, shuffle):

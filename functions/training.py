@@ -10,6 +10,7 @@ from models import UNet, BaseNet
 from pathlib import Path
 from datetime import datetime
 from scores import mean_pixel_distance
+from tables import create_examples_tables
 
 
 def set_seed(seed=42):
@@ -68,19 +69,19 @@ class Trainer:
     def train(self, step):
         self.model.train()
         running_train_acc = []
-        for i, (input, output) in enumerate(self.train_loader):
+        for i, (inputs, targets, _) in enumerate(self.train_loader):
             if self.config["is_test_batch"] and i > 1:
                 break
 
-            input, output = input.to(self.device), output.to(self.device)
+            inputs, targets = inputs.to(self.device), targets.to(self.device)
 
             self.optimizer.zero_grad()
-            outputs = self.model(input)
-            loss = self.criterion(outputs, output)
+            outputs = self.model(inputs)
+            loss = self.criterion(outputs, targets)
             loss.backward()
             self.optimizer.step()
 
-            running_train_acc.append(mean_pixel_distance(outputs, output).mean().item())
+            running_train_acc.append(mean_pixel_distance(outputs, targets).mean().item())
 
         self.train_acc = np.mean(running_train_acc)
 
@@ -91,15 +92,15 @@ class Trainer:
 
             # log_images(model, config, test_loader, device, step + 1, epoch_confidence_images)
 
-            for i, (input, output) in enumerate(self.val_loader):
+            for i, (inputs, targets, _) in enumerate(self.val_loader):
                 if self.config["is_test_batch"] and i > 1:
                     break
 
-                input, output = input.to(self.device), output.to(self.device)
-                outputs = self.model(input)
-                _ = self.criterion(outputs, output)
+                inputs, targets = inputs.to(self.device), targets.to(self.device)
+                outputs = self.model(inputs)
+                _ = self.criterion(outputs, targets)
 
-                running_val_acc.append(mean_pixel_distance(outputs, output).mean().item())
+                running_val_acc.append(mean_pixel_distance(outputs, targets).mean().item())
 
         self.val_acc = np.mean(running_val_acc)
 
@@ -119,10 +120,15 @@ class Trainer:
         print(f"Epoch {step + 1}/{self.config['epochs']}")
         print(f"Acc: {round(self.train_acc, 5)}, Validation Acc: {round(self.val_acc, 5)}")
 
-    def finish_training(self):
+    def finish_training(self, step):
         wandb.log({
             "Acc/c_best_val_acc": self.best_val_acc,
         })
+
+        create_examples_tables(
+            self.model, self.val_loader, self.device, step + 1, self.wandb_config['table_images'],
+            'Finished Validation Examples'
+        )
 
         wandb.finish()
 

@@ -33,6 +33,7 @@ if __name__ == "__main__":
         "project": "cx3",
         "group": "first_test",
         "tags": ["first_test"],
+        "table_images": [86, 87],
     }
 
     if config["loss"] == "CE":
@@ -56,5 +57,5 @@ if __name__ == "__main__":
             print(f'Early stopping after {step + 1} epochs!')
             break
 
-    model_trainer.finish_training()
+    model_trainer.finish_training(step)
     model_trainer.save_model()
