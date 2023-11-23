@@ -54,13 +54,14 @@ class SegmentationDataset(Dataset):
         return input_image, output_image
 
 
-def get_data_loaders(config, shuffle, num_workers):
+def get_data_loaders(config, shuffle):
 
     size = config["image_size"]
     batch_train_size = config["train_batch_size"]
     batch_val_size = config["val_batch_size"]
     batch_test_size = config["test_batch_size"]
-    data_path = config["data_path"]
+    data_path = f"./input/{config['dataset']}"
+    num_workers = config["num_workers"]
 
     main_train_dir = f"{data_path}/training"
     train_dirs = [f'{main_train_dir}/{d}' for d in os.listdir(main_train_dir) if os.path.isdir(f'{main_train_dir}/{d}')]
@@ -129,7 +130,7 @@ if __name__ == "__main__":
             "val_batch_size": 8,
             "test_batch_size": 8,
             "random_horizontal_flip": True,
-            "data_path": "./input/experiment_95_preprocessed",
+            "dataset": "experiment_95_preprocessed",
         },
         shuffle=True,
         num_workers=0
