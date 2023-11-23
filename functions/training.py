@@ -47,6 +47,9 @@ class Trainer:
 
         # move to device
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.device_count() > 1:
+            self.model = torch.nn.DataParallel(self.model)
+
         self.model.to(self.device)
         self.criterion.to(self.device)
         print(f'Selected device: {self.device}')
