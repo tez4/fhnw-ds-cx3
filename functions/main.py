@@ -33,7 +33,7 @@ if __name__ == "__main__":
         raise NotImplementedError()
 
     model = UNet(3, 8)
-    # model = torch.load("./models/all/model_small CNN_13.04.2023_0946.pth", map_location=torch.device('cpu'))
+    # model = torch.load("./models/model_UNet_24.11.2023_0033.pth", map_location=torch.device('cpu'))
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
     train_loader, val_loader, test_loader = get_data_loaders(config=config, shuffle=True)

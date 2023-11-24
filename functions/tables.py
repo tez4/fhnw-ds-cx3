@@ -44,7 +44,7 @@ def create_examples_tables(model, data_loader, device, epoch, image_names, table
 
         array_inputs = np.array(inputs * 255)
         array_targets = np.array(targets * 255)
-        array_outputs = np.array(outputs.detach() * 255)
+        array_outputs = np.clip(np.array(outputs.detach() * 255), 0, 255)
 
         for i in range(array_inputs.shape[0]):
 
