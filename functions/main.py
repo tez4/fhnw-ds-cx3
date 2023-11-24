@@ -29,6 +29,8 @@ if __name__ == "__main__":
 
     if config["loss"] == "MSE":
         loss_func = nn.MSELoss()
+    if config["loss"] == "L1":
+        loss_func = nn.L1Loss()
     else:
         raise NotImplementedError()
 
