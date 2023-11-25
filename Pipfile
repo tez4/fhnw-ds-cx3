@@ -14,6 +14,8 @@ tqdm = "*"
 opencv-python = "*"
 jupyter-contrib-nbextensions = "*"
 scikit-learn = "*"
+moviepy = "*"
+imageio = "*"
 
 [dev-packages]
 ipykernel = "*"
