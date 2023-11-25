@@ -10,8 +10,8 @@
     "train_batch_size": 8,
     "val_batch_size": 8,
     "test_batch_size": 8,
-    "random_horizontal_flip": true,
-    "num_workers": 0,
+    "random_horizontal_flip": false,
+    "num_workers": "auto",
     "patience": 15,
     "wandb_api_key": "your_api_key"
 }

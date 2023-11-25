@@ -101,6 +101,12 @@ def get_data_loaders(config, shuffle):
         config=config
     )
 
+    if isinstance(num_workers, str):
+        if num_workers == "auto":
+            num_workers = os.cpu_count()
+        else:
+            raise NotImplementedError()
+
     train_loader = DataLoader(
         train_dataset, batch_size=batch_train_size, shuffle=shuffle, num_workers=num_workers
     )

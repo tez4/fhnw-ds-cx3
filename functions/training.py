@@ -94,6 +94,8 @@ class Trainer:
         self.train_loss = np.mean(running_train_loss)
         self.train_acc = np.mean(running_train_acc)
 
+        print(f"Trained epoch {step + 1}/{self.config['epochs']}")
+
     def validate(self, step):
         self.model.eval()
         running_val_loss = []
@@ -135,7 +137,7 @@ class Trainer:
             "Acc/b_val_acc": self.val_acc,
         })
 
-        print(f"Epoch {step + 1}/{self.config['epochs']}")
+        print(f"Validated epoch {step + 1}/{self.config['epochs']}")
         print(f"Acc: {round(self.train_acc, 5)}, Validation Acc: {round(self.val_acc, 5)}")
 
     def finish_training(self, step):
