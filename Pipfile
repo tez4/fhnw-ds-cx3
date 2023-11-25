@@ -16,6 +16,7 @@ jupyter-contrib-nbextensions = "*"
 scikit-learn = "*"
 moviepy = "*"
 imageio = "*"
+protobuf = "*"
 
 [dev-packages]
 ipykernel = "*"
