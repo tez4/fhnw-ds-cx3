@@ -18,19 +18,30 @@ class SegmentationDataset(Dataset):
         self.image_paths = image_paths
         self.size = size
         self.augmentation = augmentation
+        self.color_jitter = config["color_jitter"]
         self.random_horizontal_flip = config["random_horizontal_flip"]
 
-        transformations = []
+        transformations_input = []
+        transformations_output = []
 
-        transformations.append(transforms.Resize((self.size, self.size)))
+        transformations_input.append(transforms.Resize((self.size, self.size)))
+        transformations_output.append(transforms.Resize((self.size, self.size)))
 
-        if augmentation:
+        if self.augmentation:
             if self.random_horizontal_flip:
-                transformations.append(transforms.RandomHorizontalFlip(p=0.5))
+                transformations_input.append(transforms.RandomHorizontalFlip(p=0.5))
+                transformations_output.append(transforms.RandomHorizontalFlip(p=0.5))
 
-        transformations.append(transforms.ToTensor())
+            if self.color_jitter:
+                transformations_input.append(
+                    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2)
+                )
 
-        self.transform = transforms.Compose(transformations)
+        transformations_input.append(transforms.ToTensor())
+        transformations_output.append(transforms.ToTensor())
+
+        self.transform_input = transforms.Compose(transformations_input)
+        self.transform_output = transforms.Compose(transformations_output)
 
     def __len__(self):
         return len(self.image_paths)
@@ -48,17 +59,16 @@ class SegmentationDataset(Dataset):
 
         seed = random.randint(0, 2**32)
 
-        if self.transform:
-            self._set_seed(seed)
-            input_array = self.transform(input_image)
-            self._set_seed(seed)
-            distance_array = self.transform(distance_image)
-            self._set_seed(seed)
-            mask_array = self.transform(mask_image)
-            self._set_seed(seed)
-            normals_array = self.transform(normals_image)
-            self._set_seed(seed)
-            output_1_array = self.transform(output_1_image)
+        self._set_seed(seed)
+        input_array = self.transform_input(input_image)
+        self._set_seed(seed)
+        distance_array = self.transform_output(distance_image)
+        self._set_seed(seed)
+        mask_array = self.transform_output(mask_image)
+        self._set_seed(seed)
+        normals_array = self.transform_output(normals_image)
+        self._set_seed(seed)
+        output_1_array = self.transform_output(output_1_image)
 
         output_array = torch.cat((distance_array, mask_array, normals_array, output_1_array), dim=0)
 
