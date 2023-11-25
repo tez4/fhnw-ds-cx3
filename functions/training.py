@@ -10,7 +10,7 @@ from models import UNet, BaseNet
 from pathlib import Path
 from datetime import datetime
 from scores import mean_pixel_distance
-from tables import create_examples_tables
+from tables import create_examples_tables, get_video_arrays, create_video_tables
 
 
 def set_seed(seed=42):
@@ -23,7 +23,7 @@ def set_seed(seed=42):
 
 
 class Trainer:
-    def __init__(self, config, wandb_config, model, optimizer, criterion, train_loader, val_loader):
+    def __init__(self, config: dict, wandb_config: dict, model, optimizer, criterion, train_loader, val_loader):
         self.config = config
         self.wandb_config = wandb_config
         self.model = model
@@ -36,6 +36,7 @@ class Trainer:
         self.best_val_loss = float('inf')
         self.best_epoch = 0
         self.num_epochs_without_improvement = 0
+        self.video_arrays = None
 
         # find optimizer name
         if isinstance(optimizer, torch.optim.SGD):
@@ -72,7 +73,7 @@ class Trainer:
         # start training loop
         wandb.watch(model)
 
-    def train(self, step):
+    def train(self, step: int):
         self.model.train()
         running_train_loss = []
         running_train_acc = []
@@ -96,7 +97,7 @@ class Trainer:
 
         print(f"Trained epoch {step + 1}/{self.config['epochs']}")
 
-    def validate(self, step):
+    def validate(self, step: int):
         self.model.eval()
         running_val_loss = []
         running_val_acc = []
@@ -128,7 +129,7 @@ class Trainer:
         if self.val_acc > self.best_val_acc:
             self.best_val_acc = self.val_acc
 
-    def log_values(self, step):
+    def log_values(self, step: int):
         wandb.log({
             "epoch": step + 1,
             "Loss/a_train_loss": self.train_loss,
@@ -136,6 +137,16 @@ class Trainer:
             "Acc/a_train_acc": self.train_acc,
             "Acc/b_val_acc": self.val_acc,
         })
+
+        self.video_arrays = get_video_arrays(
+            self.video_arrays, self.model, self.val_loader, self.device, self.wandb_config['video_images']
+        )
+
+        if step + 1 in self.wandb_config['examples_epochs']:
+            create_examples_tables(
+                self.model, self.val_loader, self.device, step + 1, self.wandb_config['table_images'],
+                f'Examples/Validation Examples Epoch {step + 1}'
+            )
 
         print(f"Validated epoch {step + 1}/{self.config['epochs']}")
         print(f"Acc: {round(self.train_acc, 5)}, Validation Acc: {round(self.val_acc, 5)}")
@@ -146,16 +157,18 @@ class Trainer:
             "Acc/c_best_val_acc": self.best_val_acc,
         })
 
+        create_video_tables(self.video_arrays, 'Videos/Validation Video Examples')
+
         create_examples_tables(
             self.model, self.val_loader, self.device, step + 1, self.wandb_config['table_images'],
-            'Finished Validation Examples'
+            'Examples/Finished Validation Examples'
         )
 
         wandb.finish()
 
         print(f"FINISHED! Best epoch: {self.best_epoch}, Best Accuracy: {self.best_val_acc}")
 
-    def save_model(self, path='./models/'):
+    def save_model(self, path: str = './models/'):
         self.model.eval()
         Path(path).mkdir(parents=True, exist_ok=True)
         torch.save(self.model, f'{path}model_{self.config["name"]}_{self.config["start_time"]}.pth')
