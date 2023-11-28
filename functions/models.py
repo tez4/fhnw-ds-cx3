@@ -170,3 +170,28 @@ class BaseNet(nn.Module):
         x = self.inc(x)
         logits = self.outc(x)
         return logits
+
+
+class Discriminator(nn.Module):
+    def __init__(self, in_channels=3):
+        super(Discriminator, self).__init__()
+
+        # Function to create a convolutional block
+        def discriminator_block(in_filters, out_filters, normalization=True):
+            layers = [nn.Conv2d(in_filters, out_filters, 4, stride=2, padding=1)]
+            if normalization:
+                layers.append(nn.BatchNorm2d(out_filters))
+            layers.append(nn.LeakyReLU(0.2, inplace=True))
+            return layers
+
+        self.model = nn.Sequential(
+            *discriminator_block(in_channels, 64, normalization=False),
+            *discriminator_block(64, 128),
+            *discriminator_block(128, 256),
+            *discriminator_block(256, 512),
+            nn.Conv2d(512, 1, 4, padding=1)
+        )
+
+    def forward(self, img_A, img_B):
+        img_input = torch.cat((img_A, img_B), 1)
+        return self.model(img_input)

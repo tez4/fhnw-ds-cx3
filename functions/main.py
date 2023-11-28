@@ -2,7 +2,7 @@ import json
 import wandb
 import torch
 import torch.nn as nn
-from models import BaseNet, UNet
+from models import BaseNet, UNet, Discriminator
 from pathlib import Path
 from datetime import datetime
 from training import set_seed, Trainer
@@ -22,8 +22,8 @@ if __name__ == "__main__":
     wandb_config = {
         'entity': 'tez4',
         "project": "cx3",
-        "group": "first_test",
-        "tags": ["first_test"],
+        "group": "gan_test",
+        "tags": ["gan_test"],
         "table_images": [i for i in range(118, 131)],
         "video_images": [118, 119, 120, 121],
         "examples_epochs": [50, 100, 200, 400],
@@ -37,12 +37,18 @@ if __name__ == "__main__":
         raise NotImplementedError()
 
     model = UNet(3, 8)
+    discriminator = Discriminator(11)
     # model = torch.load("./models/model_UNet_24.11.2023_0033.pth", map_location=torch.device('cpu'))
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
+    optimizer_discriminator = torch.optim.Adam(model.parameters(), lr=config["lr"])
+
     train_loader, val_loader, test_loader = get_data_loaders(config=config, shuffle=True)
 
-    model_trainer = Trainer(config, wandb_config, model, optimizer, loss_func, train_loader, val_loader)
+    model_trainer = Trainer(
+        config, wandb_config, model, discriminator, optimizer, optimizer_discriminator, loss_func, loss_func,
+        train_loader, val_loader
+    )
     for step in range(config["epochs"]):
         model_trainer.train(step)
         model_trainer.validate(step)
