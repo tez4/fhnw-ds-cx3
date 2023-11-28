@@ -23,12 +23,18 @@ def set_seed(seed=42):
 
 
 class Trainer:
-    def __init__(self, config: dict, wandb_config: dict, model, optimizer, criterion, train_loader, val_loader):
+    def __init__(
+            self, config: dict, wandb_config: dict, model, discriminator, optimizer, optimizer_discriminator,
+            criterion, criterion_discriminator, train_loader, val_loader):
+
         self.config = config
         self.wandb_config = wandb_config
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion
+        self.discriminator = discriminator
+        self.optimizer_discriminator = optimizer_discriminator
+        self.criterion_discriminator = criterion_discriminator
         self.train_loader = train_loader
         self.val_loader = val_loader
 
@@ -54,6 +60,7 @@ class Trainer:
             self.model = self.model.module
 
         self.model.to(self.device)
+        self.discriminator.to(self.device)
         self.criterion.to(self.device)
         print(f'Selected device: {self.device}')
 
@@ -75,6 +82,7 @@ class Trainer:
 
     def train(self, step: int):
         self.model.train()
+        self.discriminator.train()
         running_train_loss = []
         running_train_acc = []
         for i, (inputs, targets, _) in enumerate(self.train_loader):
@@ -83,9 +91,26 @@ class Trainer:
 
             inputs, targets = inputs.to(self.device), targets.to(self.device)
 
-            self.optimizer.zero_grad()
             outputs = self.model(inputs)
+
+            self.optimizer.zero_grad()
             loss = self.criterion(outputs, targets)
+
+            if self.config['has_discriminator']:
+                self.optimizer_discriminator.zero_grad()
+
+                real_output = self.discriminator(inputs, targets)
+                loss_discriminator_real = self.criterion_discriminator(real_output, torch.ones_like(real_output))
+
+                fake_output = self.discriminator(inputs, outputs.detach())
+                loss_discriminator_fake = self.criterion_discriminator(fake_output, torch.zeros_like(fake_output))
+
+                loss_discriminator = (loss_discriminator_real + loss_discriminator_fake) / 2
+                loss_discriminator.backward()
+                self.optimizer_discriminator.step()
+
+                loss += loss_discriminator.detach() * self.config['loss_lambda']
+
             loss.backward()
             self.optimizer.step()
 
