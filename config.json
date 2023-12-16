@@ -1,6 +1,6 @@
 {
     "name": "UNet",
-    "dataset": "experiment_95_preprocessed",
+    "dataset": "./input/experiment_95_preprocessed",
     "is_test_batch": true,
     "optimizer": "Adam",
     "lr": 0.0001,

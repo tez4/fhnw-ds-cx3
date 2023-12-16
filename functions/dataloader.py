@@ -81,7 +81,7 @@ def get_data_loaders(config, shuffle):
     batch_train_size = config["train_batch_size"]
     batch_val_size = config["val_batch_size"]
     batch_test_size = config["test_batch_size"]
-    data_path = f"./input/{config['dataset']}"
+    data_path = config['dataset']
     num_workers = config["num_workers"]
 
     main_train_dir = f"{data_path}/training"
@@ -156,13 +156,14 @@ if __name__ == "__main__":
             "train_batch_size": 8,
             "val_batch_size": 8,
             "test_batch_size": 8,
-            "random_horizontal_flip": True,
-            "dataset": "experiment_95_preprocessed",
+            "random_horizontal_flip": False,
+            "color_jitter": True,
+            "dataset": "./input/experiment_95_preprocessed",
+            "num_workers": 0
         },
-        shuffle=True,
-        num_workers=0
+        shuffle=True
     )
 
     train_iter = iter(train_loader)
-    input_image, output_image = next(train_iter)
+    input_image, output_image, image_name = next(train_iter)
     show_tensor(output_image, element=0)

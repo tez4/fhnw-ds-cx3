@@ -91,9 +91,8 @@ class Trainer:
 
             inputs, targets = inputs.to(self.device), targets.to(self.device)
 
-            outputs = self.model(inputs)
-
             self.optimizer.zero_grad()
+            outputs = self.model(inputs)
             loss = self.criterion(outputs, targets)
 
             if self.config['has_discriminator']:
