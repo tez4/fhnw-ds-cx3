@@ -2,7 +2,7 @@ import json
 import wandb
 import torch
 import torch.nn as nn
-from models import BaseNet, UNet, Discriminator
+from .models import BaseNet, UNet, Discriminator
 from pathlib import Path
 from datetime import datetime
 from training import set_seed, Trainer
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError()
 
-    model = UNet(3, 8)
+    model = UNet(3, 8, config['bilinear'], config['attention'])
     discriminator = Discriminator(11)
     # model = torch.load("./models/model_UNet_24.11.2023_0033.pth", map_location=torch.device('cpu'))
 

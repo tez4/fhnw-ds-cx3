@@ -16,5 +16,7 @@
     "patience": 15,
     "wandb_api_key": "your_api_key",
     "loss_lambda": 0.01,
-    "has_discriminator": true
+    "has_discriminator": true,
+    "bilinear": true,
+    "attention": true
 }
