@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 from tqdm import tqdm
-from models import UNet, BaseNet
 from pathlib import Path
 from datetime import datetime
 from scores import mean_pixel_distance
