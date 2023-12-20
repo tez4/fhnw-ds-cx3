@@ -2,7 +2,7 @@ import json
 import wandb
 import torch
 import torch.nn as nn
-from .models import BaseNet, UNet, Discriminator
+from modelling import BaseNet, UNet, Discriminator
 from pathlib import Path
 from datetime import datetime
 from training import set_seed, Trainer
