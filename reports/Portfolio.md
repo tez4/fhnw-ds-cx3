@@ -16,11 +16,21 @@
   - [Inhaltsverzeichnis](#inhaltsverzeichnis)
   - [Experimentenreihe](#experimentenreihe)
     - [Erste Bildpaare](#erste-bildpaare)
-    - [Visualisierungen mit Normalen und Distanz zur Kamera](#visualisierungen-mit-normalen-und-distanz-zur-kamera)
+    - [Visualisierungen von Normalen und Distanz zur Kamera](#visualisierungen-von-normalen-und-distanz-zur-kamera)
+    - [Produktbild verbessern](#produktbild-verbessern)
+    - [Bilder auf SLURM-Cluster generieren](#bilder-auf-slurm-cluster-generieren)
+    - [Speicherplatz optimieren](#speicherplatz-optimieren)
+    - [Post-Processing auf Bildern durchführen](#post-processing-auf-bildern-durchführen)
+    - [Modell trainieren](#modell-trainieren)
+  - [Reflexion Lernziele](#reflexion-lernziele)
   - [Meeting Notizen](#meeting-notizen)
     - [18.09.2023 - Kickoff und Definition der Lernziele](#18092023---kickoff-und-definition-der-lernziele)
     - [28.09.2023 - Finalisierung der Lernziele](#28092023---finalisierung-der-lernziele)
     - [04.10.2023 - Update zum Trainingsdaten generieren](#04102023---update-zum-trainingsdaten-generieren)
+    - [18.10.2023 - Philosophie und Business Use Case](#18102023---philosophie-und-business-use-case)
+    - [01.11.2023 - Stil der Produktfotos](#01112023---stil-der-produktfotos)
+    - [29.11.2023 - Erste Bildserie und erstes Modell](#29112023---erste-bildserie-und-erstes-modell)
+    - [13.12.2023 - Ausblick auf Fertigstellung](#13122023---ausblick-auf-fertigstellung)
 
 ## Experimentenreihe
 
@@ -40,11 +50,25 @@ Bei dem Experiment, welches auf folgendem Bild dargestellt wird, konnte ich zum 
 
 ![Experiment 19](images/experiment_19.jpg "Experiment 19")
 
-### Visualisierungen mit Normalen und Distanz zur Kamera
+### Visualisierungen von Normalen und Distanz zur Kamera
 
 Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, welche später das Modell-Training unterstützen, indem sie dem Modell das 3-Dimensionale Verständnis erleichtern. Dass dies das Training erleichtert, ist zumindest die momentane Hypothese. Im Bild unterhalb sieht man zuoberst das schmutzige Bild, danach eine Visualisierung der Normalen, dann eine Visualisierung der Distanz zur Kamera und als Letztes das Produktbild. Um die Visualisierungen zu generieren habe ich zuerst ein benutzerdefiniertes Shader Node Setup erstellt und füge dieses allen Materialien im Python Script als `Surface` hinzu.
 
 ![Experiment 47](images/experiment_47.jpg "Experiment 47")
+
+### Produktbild verbessern
+
+### Bilder auf SLURM-Cluster generieren
+
+### Speicherplatz optimieren
+
+### Post-Processing auf Bildern durchführen
+
+### Modell trainieren
+
+- no geometric transformations (normals are broken)
+
+## Reflexion Lernziele
 
 ## Meeting Notizen
 
@@ -91,3 +115,42 @@ Trainingsdaten generieren:
 - Das Produktfoto soll noch verbessert werden. Hier soll Joël noch eine Recherche betreiben und experimentieren.
 - Es können mehrere Versionen des Produktfotos gespeichert werden. Dies erlaubt im Modell kreative Ansätze auszuprobieren.
 - Bilder müssen nicht unbedingt im .PNG format gespeichert werden. Hier kann Speicherplatz eingespart werden.
+
+### 18.10.2023 - Philosophie und Business Use Case
+
+Beim Meeting waren Adrian, Moritz und Joël anwesend.
+
+- Joël hat Blender noch nicht zum Laufen gebracht.
+- Beim Produktfoto konnte Joël auch kein Fortschritt machen, da er viele andere Dinge machen musste.
+- Adrian stiess eine Diskussion über die Philosophie, warum dieses Produkt nützlich ist, an.
+- Adrian regte Joël an noch über den Business Use Case zu reflektieren. Er meinte, es wäre wertvoll sich mit möglichen konkreten Anwendungsfällen zu beschäftigen.
+- Es wurde ebenfalls diskutiert, Literatur zu ähnlichen arbeiten in den Bericht einzubringen.
+
+### 01.11.2023 - Stil der Produktfotos
+
+Beim Meeting waren Adrian, Moritz und Joël anwesend.
+
+- Joël hat mit dem Rendern in Compute Cluster einige Fortschritte gemacht, es gibt jedoch immer noch einen Fehler.
+- Joël hat einige Vorschläge für den Stil der Produktfotos gemacht und hat diese Ausführlich mit Adrian und Moritz diskutiert.
+- Adrian wünscht, dass Joël die gewünschten Eigenschaften für die Produktbilder definiert.
+
+### 29.11.2023 - Erste Bildserie und erstes Modell
+
+Beim Meeting waren Adrian, Moritz und Joël anwesend.
+
+- Joël berichtet, dass er mithilfe von Moritz Blender auf dem Compute Cluster einrichten konnte.
+- Joël berichtet ebenfalls, dass er nun eine erste Serie von etwa 1000 Bilder generiert hat.
+- Den Stil für die Produktfotos hat Joël nun definiert.
+- Ein erstes Modell hat Joël nun auch schon trainiert und präsentiert die Resultate.
+- Joël gibt, mithilfe von Moritz, Adrian eine kleine Einführung in Deep Learning.
+
+### 13.12.2023 - Ausblick auf Fertigstellung
+
+Beim Meeting waren Adrian, Moritz und Joël anwesend.
+
+- Anzahl der gesammelten Daten ist mit etwas mehr als 10000 Bildern Okay.
+- Format der Verteidigung wurde besprochen. Es gibt eine Präsentation von 30 Minuten.
+- Modelle sollen noch verglichen werden und im Bericht beschrieben werden.
+- Bilineares Upsampling soll ausprobiert werden, um Schachbrettmuster von Output-Bildern zu entfernen.
+- Dokumentation soll aktualisiert werden.
+- In der Dokumentation kann über die Erfüllung der Lernziele reflektiert werden.
