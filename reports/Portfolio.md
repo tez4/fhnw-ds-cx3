@@ -14,7 +14,10 @@
 
 - [Automatische Optimierung von Produktbildern](#automatische-optimierung-von-produktbildern)
   - [Inhaltsverzeichnis](#inhaltsverzeichnis)
+  - [Idee](#idee)
   - [Experimentenreihe](#experimentenreihe)
+    - [Entscheidung für Blender](#entscheidung-für-blender)
+    - [Aufbau der Bildgenerierung](#aufbau-der-bildgenerierung)
     - [Erste Bildpaare](#erste-bildpaare)
     - [Visualisierungen von Normalen und Distanz zur Kamera](#visualisierungen-von-normalen-und-distanz-zur-kamera)
     - [Produktbild verbessern](#produktbild-verbessern)
@@ -32,11 +35,24 @@
     - [29.11.2023 - Erste Bildserie und erstes Modell](#29112023---erste-bildserie-und-erstes-modell)
     - [13.12.2023 - Ausblick auf Fertigstellung](#13122023---ausblick-auf-fertigstellung)
 
+## Idee
+
 ## Experimentenreihe
+
+### Entscheidung für Blender
+
+Ein entscheidender Schritt in diesem Projekt war die Generierung von Daten, wofür ich mich für die Verwendung der Software Blender entschieden habe. Diese Entscheidung war durch mehrere Faktoren motiviert.
+
+Zunächst stellte sich heraus, dass andere gängige Programme wie Unreal Engine und Unity eine steilere Lernkurve aufwiesen. Obwohl diese Plattformen leistungsfähig sind, erfordern sie umfangreicheres Vorwissen und längere Einarbeitungszeiten. Im Gegensatz dazu bietet Blender eine benutzerfreundlichere Schnittstelle, die es ermöglicht, schneller produktiv zu arbeiten. Dies war für mein Projekt von wesentlicher Bedeutung, da es mir erlaubte, mehr Zeit für die tatsächliche Arbeit zu verwenden.
+
+Ein weiterer entscheidender Vorteil von Blender ist seine Kompatibilität mit Python. Diese Integration ermöglichte es mir, Blender nahtlos in meinen Workflow einzubinden. Da Python auch für die Modellierung im Data-Science-Bereich verwendet wird, konnte ich Skripte und Funktionen direkt in Blender einbinden. Dies vereinfachte den Prozess der Datengenerierung erheblich, indem es mir ermöglichte, Automatisierungen und spezifische Anpassungen vorzunehmen, die genau auf die Bedürfnisse meines Projekts zugeschnitten waren.
+
+Darüber hinaus bietet Blender eine umfangreiche Community und eine Vielzahl von Ressourcen, die den Einstieg und die Problembehandlung erleichtern. Die Open-Source-Natur von Blender fördert eine kollaborative Umgebung, in der ständig neue Plugins und Funktionen entwickelt werden, die sich ideal für innovative und experimentelle Projekte im Bereich Data Science eignen.
+
+### Aufbau der Bildgenerierung
 
 Folgende Dinge müssen noch im Detail dokumentiert werden:
 
-- Entscheidung Blender zu Nutzen
 - grundsätzlicher Aufbau der Blender Image generation
 - Beschreibung verschiedener Typen von Elementen in Blender (HDRI, Objekt, Textur)
 - Beschreibung Entscheidung Auswahl von Cycles Blender renderer
@@ -65,6 +81,10 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 ### Post-Processing auf Bildern durchführen
 
 ### Modell trainieren
+
+![U-Net](images/u_net.png "U-Net")
+
+![U-Net multi-task learning](images/u_net_multi_task.png "U-Net multi-task learning")
 
 - no geometric transformations (normals are broken)
 
