@@ -19,5 +19,6 @@
     "has_discriminator": true,
     "bilinear": true,
     "attention": true,
-    "multi_task_learning": true
+    "multi_task_learning": true,
+    "training_images": "all"
 }

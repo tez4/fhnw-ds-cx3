@@ -96,9 +96,14 @@ def get_data_loaders(config, shuffle):
     batch_test_size = config["test_batch_size"]
     data_path = config['dataset']
     num_workers = config["num_workers"]
+    training_images = config["training_images"]
 
     main_train_dir = f"{data_path}/training"
     train_dirs = [f'{main_train_dir}/{d}' for d in os.listdir(main_train_dir) if os.path.isdir(f'{main_train_dir}/{d}')]
+
+    if training_images != "all":
+        train_dirs = train_dirs[:training_images]
+
     train_dataset = SegmentationDataset(
         image_paths=train_dirs,
         augmentation=True,
@@ -186,15 +191,16 @@ if __name__ == "__main__":
             "color_jitter": True,
             "dataset": "./input/experiment_95_preprocessed",
             "num_workers": 0,
-            "multi_task_learning": True
+            "multi_task_learning": True,
+            "training_images": "all"
         },
         shuffle=True
     )
 
-    iterator = iter(real_loader)
-    input_image, image_name = next(iterator)
-    show_tensor(input_image, element=0)
-
     iterator = iter(train_loader)
     input_image, output_image, image_name = next(iterator)
     show_tensor(output_image, element=0)
+
+    iterator = iter(real_loader)
+    input_image, image_name = next(iterator)
+    show_tensor(input_image, element=0)
