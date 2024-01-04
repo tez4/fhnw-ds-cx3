@@ -79,7 +79,7 @@ def create_real_tables(model, data_loader, device, epoch, table_name, multi_task
     })
 
 
-def create_examples_tables(model, data_loader, device, epoch, image_names, table_name, multi_task_learning):
+def create_examples_tables(model, data_loader, device, epoch, table_name, multi_task_learning, n):
     if multi_task_learning:
         table_columns = [
             "Name",
@@ -107,9 +107,11 @@ def create_examples_tables(model, data_loader, device, epoch, image_names, table
 
     table = wandb.Table(columns=table_columns)
 
+    example_image_paths = data_loader.dataset.image_paths[:n]
+
     for (inputs, targets, image_path) in data_loader:
 
-        if len([name for name in image_path if name.endswith(tuple(map(str, image_names)))]) == 0:
+        if len([name for name in image_path if name in example_image_paths]) == 0:
             continue
 
         inputs = inputs.to(device)
@@ -126,7 +128,7 @@ def create_examples_tables(model, data_loader, device, epoch, image_names, table
 
         for i in range(array_inputs.shape[0]):
 
-            if image_path[i].endswith(tuple(map(str, image_names))) is False:
+            if image_path[i] not in example_image_paths:
                 continue
 
             input_image = Image.fromarray(np.transpose(array_inputs[i], (1, 2, 0)).astype('uint8'), mode='RGB')
@@ -176,13 +178,15 @@ def create_examples_tables(model, data_loader, device, epoch, image_names, table
     })
 
 
-def get_video_arrays(video_arrays, model, data_loader, device, image_names, multi_task_learning):
+def get_video_arrays(video_arrays, model, data_loader, device, multi_task_learning, n):
     if video_arrays is None:
         video_arrays = {}
 
+    example_image_paths = data_loader.dataset.image_paths[:n]
+
     for (inputs, _, image_path) in data_loader:
 
-        if len([name for name in image_path if name.endswith(tuple(map(str, image_names)))]) == 0:
+        if len([name for name in image_path if name in example_image_paths]) == 0:
             continue
 
         inputs = inputs.to(device)
@@ -195,7 +199,7 @@ def get_video_arrays(video_arrays, model, data_loader, device, image_names, mult
 
         for i in range(array_outputs.shape[0]):
 
-            if image_path[i].endswith(tuple(map(str, image_names))) is False:
+            if image_path[i] not in example_image_paths:
                 continue
 
             image_name = image_path[i].split('/')[-1]

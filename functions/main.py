@@ -24,9 +24,7 @@ if __name__ == "__main__":
         "project": "cx3",
         "group": "gan_test",
         "tags": ["gan_test"],
-        "table_images": [i for i in range(118, 131)],
-        "video_images": [118, 119, 120, 121],
-        "examples_epochs": [50, 100, 200, 400],
+        "examples_epochs": [10, 50],
     }
 
     if config["loss"] == "MSE":

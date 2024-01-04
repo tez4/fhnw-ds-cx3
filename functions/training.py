@@ -175,15 +175,15 @@ class Trainer:
         })
 
         self.video_arrays = get_video_arrays(
-            self.video_arrays, self.model, self.val_loader, self.device, self.wandb_config['video_images'],
-            self.config["multi_task_learning"]
+            self.video_arrays, self.model, self.val_loader, self.device,
+            self.config["multi_task_learning"], 3
         )
 
         if step + 1 in self.wandb_config['examples_epochs']:
             create_examples_tables(
-                self.model, self.val_loader, self.device, step + 1, self.wandb_config['table_images'],
+                self.model, self.val_loader, self.device, step + 1,
                 f'Examples/Validation Examples Epoch {step + 1}',
-                self.config["multi_task_learning"]
+                self.config["multi_task_learning"], 20
             )
 
             create_real_tables(
@@ -205,9 +205,9 @@ class Trainer:
         create_video_tables(self.video_arrays, 'Videos/Validation Video Examples', self.config["multi_task_learning"])
 
         create_examples_tables(
-            self.model, self.val_loader, self.device, step + 1, self.wandb_config['table_images'],
+            self.model, self.val_loader, self.device, step + 1,
             'Finished Examples/Finished Validation Examples',
-            self.config["multi_task_learning"]
+            self.config["multi_task_learning"], 20
         )
 
         create_real_tables(
