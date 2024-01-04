@@ -8,7 +8,7 @@ from PIL import Image
 from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime
-from scores import mean_squared_error
+from scores import mean_squared_error, image_mean_squared_error
 from tables import create_examples_tables, create_real_tables, get_video_arrays, create_video_tables
 
 
@@ -39,6 +39,7 @@ class Trainer:
         self.real_loader = real_loader
 
         self.best_val_mse = 0.0
+        self.best_val_image_mse = 0.0
         self.best_val_loss = float('inf')
         self.best_epoch = 0
         self.num_epochs_without_improvement = 0
@@ -85,6 +86,7 @@ class Trainer:
         self.discriminator.train()
         running_train_loss = []
         running_train_mse = []
+        running_train_image_mse = []
         for i, (inputs, targets, _) in enumerate(self.train_loader):
             if self.config["is_test_batch"] and i > 1:
                 break
@@ -115,16 +117,19 @@ class Trainer:
 
             running_train_loss.append(loss.item())
             running_train_mse.append(mean_squared_error(outputs, targets).mean().item())
+            running_train_image_mse.append(image_mean_squared_error(outputs, targets).mean().item())
 
         self.train_loss = np.mean(running_train_loss)
         self.train_mse = np.mean(running_train_mse)
+        self.train_image_mse = np.mean(running_train_image_mse)
 
         print(f"Trained epoch {step + 1}/{self.config['epochs']}")
 
     def validate(self, step: int):
         self.model.eval()
         running_val_loss = []
-        running_mse = []
+        running_val_mse = []
+        running_val_image_mse = []
         with torch.no_grad():
 
             # log_images(model, config, test_loader, device, step + 1, epoch_confidence_images)
@@ -138,10 +143,12 @@ class Trainer:
                 loss = self.criterion(outputs, targets)
 
                 running_val_loss.append(loss.item())
-                running_mse.append(mean_squared_error(outputs, targets).mean().item())
+                running_val_mse.append(mean_squared_error(outputs, targets).mean().item())
+                running_val_image_mse.append(image_mean_squared_error(outputs, targets).mean().item())
 
         self.val_loss = np.mean(running_val_loss)
-        self.val_mse = np.mean(running_mse)
+        self.val_mse = np.mean(running_val_mse)
+        self.val_image_mse = np.mean(running_val_image_mse)
 
         if self.val_loss < self.best_val_loss:
             self.best_val_loss = self.val_loss
@@ -153,6 +160,9 @@ class Trainer:
         if self.val_mse > self.best_val_mse:
             self.best_val_mse = self.val_mse
 
+        if self.val_image_mse > self.best_val_image_mse:
+            self.best_val_image_mse = self.val_image_mse
+
     def log_values(self, step: int):
         wandb.log({
             "epoch": step + 1,
@@ -160,6 +170,8 @@ class Trainer:
             "Loss/b_val_loss": self.val_loss,
             "MSE/a_train_mse": self.train_mse,
             "MSE/b_val_mse": self.val_mse,
+            "Image MSE/a_train_image_mse": self.train_image_mse,
+            "Image MSE/b_val_image_mse": self.val_image_mse,
         })
 
         self.video_arrays = get_video_arrays(
@@ -184,6 +196,7 @@ class Trainer:
         wandb.log({
             "Loss/c_best_val_loss": self.best_val_loss,
             "MSE/c_best_val_mse": self.best_val_mse,
+            "Image MSE/c_best_val_image_mse": self.best_val_image_mse,
         })
 
         create_video_tables(self.video_arrays, 'Videos/Validation Video Examples')
