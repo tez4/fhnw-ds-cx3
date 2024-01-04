@@ -23,11 +23,10 @@ def set_seed(seed=42):
 
 class Trainer:
     def __init__(
-            self, config: dict, wandb_config: dict, model, discriminator, optimizer, optimizer_discriminator,
+            self, config: dict, model, discriminator, optimizer, optimizer_discriminator,
             criterion, criterion_discriminator, train_loader, val_loader, real_loader):
 
         self.config = config
-        self.wandb_config = wandb_config
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion
@@ -70,11 +69,11 @@ class Trainer:
         config['optimizer'] = optimizer_name
 
         wandb.init(
-            project=wandb_config['project'],
+            project='cx3',
             name=f"{config['name']}-{config['epochs']}-epochs-{config['start_time']}",
-            entity=wandb_config['entity'],
-            group=wandb_config['group'],
-            tags=wandb_config["tags"] + (['test-batch'] if config['is_test_batch'] else []),
+            entity='tez4',
+            group=config['group'],
+            tags=config["tags"] + (['test-batch'] if config['is_test_batch'] else []),
             config=config
         )
 
@@ -179,7 +178,7 @@ class Trainer:
             self.config["multi_task_learning"], 3
         )
 
-        if step + 1 in self.wandb_config['examples_epochs']:
+        if step + 1 in self.config['examples_epochs']:
             create_examples_tables(
                 self.model, self.val_loader, self.device, step + 1,
                 f'Examples/Validation Examples Epoch {step + 1}',

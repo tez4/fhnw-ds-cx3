@@ -19,14 +19,6 @@ if __name__ == "__main__":
     wandb.login(key=config["wandb_api_key"])
     set_seed(42)
 
-    wandb_config = {
-        'entity': 'tez4',
-        "project": "cx3",
-        "group": "gan_test",
-        "tags": ["gan_test"],
-        "examples_epochs": [10, 50],
-    }
-
     if config["loss"] == "MSE":
         loss_func = nn.MSELoss()
     if config["loss"] == "L1":
@@ -62,7 +54,7 @@ if __name__ == "__main__":
     train_loader, val_loader, test_loader, real_loader = get_data_loaders(config=config, shuffle=True)
 
     model_trainer = Trainer(
-        config, wandb_config, model, discriminator, optimizer, optimizer_discriminator, loss_func, loss_func,
+        config, model, discriminator, optimizer, optimizer_discriminator, loss_func, loss_func,
         train_loader, val_loader, real_loader
     )
     for step in range(config["epochs"]):
