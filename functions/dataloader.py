@@ -13,11 +13,12 @@ from sklearn.model_selection import StratifiedKFold, KFold
 
 
 class SegmentationDataset(Dataset):
-    def __init__(self, image_paths, size, config, augmentation):
+    def __init__(self, image_paths, size, config, augmentation, is_real_dataset=False):
 
         self.image_paths = image_paths
         self.size = size
         self.augmentation = augmentation
+        self.is_real_dataset = is_real_dataset
         self.color_jitter = config["color_jitter"]
         self.random_horizontal_flip = config["random_horizontal_flip"]
 
@@ -52,27 +53,33 @@ class SegmentationDataset(Dataset):
 
     def __getitem__(self, idx):
         input_image = Image.open(f"{self.image_paths[idx]}/input.png")
-        distance_image = Image.open(f"{self.image_paths[idx]}/distance.png")
-        mask_image = Image.open(f"{self.image_paths[idx]}/mask.png")
-        normals_image = Image.open(f"{self.image_paths[idx]}/normals.png")
-        output_1_image = Image.open(f"{self.image_paths[idx]}/output_1.png")
+
+        if not self.is_real_dataset:
+            distance_image = Image.open(f"{self.image_paths[idx]}/distance.png")
+            mask_image = Image.open(f"{self.image_paths[idx]}/mask.png")
+            normals_image = Image.open(f"{self.image_paths[idx]}/normals.png")
+            output_1_image = Image.open(f"{self.image_paths[idx]}/output_1.png")
 
         seed = random.randint(0, 2**32)
 
         self._set_seed(seed)
         input_array = self.transform_input(input_image)
-        self._set_seed(seed)
-        distance_array = self.transform_output(distance_image)
-        self._set_seed(seed)
-        mask_array = self.transform_output(mask_image)
-        self._set_seed(seed)
-        normals_array = self.transform_output(normals_image)
-        self._set_seed(seed)
-        output_1_array = self.transform_output(output_1_image)
+        if not self.is_real_dataset:
+            self._set_seed(seed)
+            distance_array = self.transform_output(distance_image)
+            self._set_seed(seed)
+            mask_array = self.transform_output(mask_image)
+            self._set_seed(seed)
+            normals_array = self.transform_output(normals_image)
+            self._set_seed(seed)
+            output_1_array = self.transform_output(output_1_image)
 
-        output_array = torch.cat((distance_array, mask_array, normals_array, output_1_array), dim=0)
+            output_array = torch.cat((distance_array, mask_array, normals_array, output_1_array), dim=0)
 
-        return input_array, output_array, self.image_paths[idx]
+        if not self.is_real_dataset:
+            return input_array, output_array, self.image_paths[idx]
+        else:
+            return input_array, self.image_paths[idx]
 
 
 def get_data_loaders(config, shuffle):
@@ -111,6 +118,16 @@ def get_data_loaders(config, shuffle):
         config=config
     )
 
+    main_real_dir = f"{data_path}/real"
+    real_dirs = [f'{main_real_dir}/{d}' for d in os.listdir(main_real_dir) if os.path.isdir(f'{main_real_dir}/{d}')]
+    real_dataset = SegmentationDataset(
+        image_paths=real_dirs,
+        augmentation=False,
+        size=size,
+        config=config,
+        is_real_dataset=True
+    )
+
     if isinstance(num_workers, str):
         if num_workers == "auto":
             num_workers = os.cpu_count()
@@ -126,8 +143,11 @@ def get_data_loaders(config, shuffle):
     test_loader = DataLoader(
         test_dataset, batch_size=batch_test_size, shuffle=False, num_workers=num_workers
     )
+    real_loader = DataLoader(
+        real_dataset, batch_size=batch_test_size, shuffle=False, num_workers=num_workers
+    )
 
-    return train_loader, val_loader, test_loader
+    return train_loader, val_loader, test_loader, real_loader
 
 
 def show_tensor(tensor, element=None, multiplier=255):
@@ -150,7 +170,7 @@ def show_tensor(tensor, element=None, multiplier=255):
 
 
 if __name__ == "__main__":
-    train_loader, val_loader, test_loader = get_data_loaders(
+    train_loader, val_loader, test_loader, real_loader = get_data_loaders(
         {
             "image_size": 512,
             "train_batch_size": 8,
@@ -164,6 +184,10 @@ if __name__ == "__main__":
         shuffle=True
     )
 
-    train_iter = iter(train_loader)
-    input_image, output_image, image_name = next(train_iter)
+    iterator = iter(real_loader)
+    input_image, image_name = next(iterator)
+    show_tensor(input_image, element=0)
+
+    iterator = iter(train_loader)
+    input_image, output_image, image_name = next(iterator)
     show_tensor(output_image, element=0)
