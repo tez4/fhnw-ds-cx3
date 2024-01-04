@@ -43,11 +43,11 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])
     optimizer_discriminator = torch.optim.Adam(model.parameters(), lr=config["lr"])
 
-    train_loader, val_loader, test_loader = get_data_loaders(config=config, shuffle=True)
+    train_loader, val_loader, test_loader, real_loader = get_data_loaders(config=config, shuffle=True)
 
     model_trainer = Trainer(
         config, wandb_config, model, discriminator, optimizer, optimizer_discriminator, loss_func, loss_func,
-        train_loader, val_loader
+        train_loader, val_loader, real_loader
     )
     for step in range(config["epochs"]):
         model_trainer.train(step)

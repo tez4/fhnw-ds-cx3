@@ -9,7 +9,7 @@ from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime
 from scores import mean_pixel_distance
-from tables import create_examples_tables, get_video_arrays, create_video_tables
+from tables import create_examples_tables, create_real_tables, get_video_arrays, create_video_tables
 
 
 def set_seed(seed=42):
@@ -24,7 +24,7 @@ def set_seed(seed=42):
 class Trainer:
     def __init__(
             self, config: dict, wandb_config: dict, model, discriminator, optimizer, optimizer_discriminator,
-            criterion, criterion_discriminator, train_loader, val_loader):
+            criterion, criterion_discriminator, train_loader, val_loader, real_loader):
 
         self.config = config
         self.wandb_config = wandb_config
@@ -36,6 +36,7 @@ class Trainer:
         self.criterion_discriminator = criterion_discriminator
         self.train_loader = train_loader
         self.val_loader = val_loader
+        self.real_loader = real_loader
 
         self.best_val_acc = 0.0
         self.best_val_loss = float('inf')
@@ -171,6 +172,11 @@ class Trainer:
                 f'Examples/Validation Examples Epoch {step + 1}'
             )
 
+            create_real_tables(
+                self.model, self.real_loader, self.device, step + 1,
+                f'Examples/Real Examples Epoch {step + 1}'
+            )
+
         print(f"Validated epoch {step + 1}/{self.config['epochs']}")
         print(f"Acc: {round(self.train_acc, 5)}, Validation Acc: {round(self.val_acc, 5)}")
 
@@ -184,7 +190,12 @@ class Trainer:
 
         create_examples_tables(
             self.model, self.val_loader, self.device, step + 1, self.wandb_config['table_images'],
-            'Examples/Finished Validation Examples'
+            'Finished Examples/Finished Validation Examples'
+        )
+
+        create_real_tables(
+            self.model, self.real_loader, self.device, step + 1,
+            'Finished Examples/Finished Real Examples'
         )
 
         wandb.finish()

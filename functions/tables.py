@@ -11,6 +11,53 @@ from pathlib import Path
 from scores import mean_pixel_distance
 
 
+def create_real_tables(model, data_loader, device, epoch, table_name):
+    table = wandb.Table(
+        columns=[
+            "Name",
+            "Input",
+            "Pred Depth",
+            "Pred Mask",
+            "Pred Normals",
+            "Pred Output",
+            "Epoch"
+        ]
+    )
+
+    for (inputs, image_path) in data_loader:
+
+        inputs = inputs.to(device)
+        outputs = model(inputs)
+
+        inputs = inputs.to('cpu')
+        outputs = outputs.to('cpu')
+
+        array_inputs = np.array(inputs * 255)
+        array_outputs = np.clip(np.array(outputs.detach() * 255), 0, 255)
+
+        for i in range(array_inputs.shape[0]):
+
+            input_image = Image.fromarray(np.transpose(array_inputs[i], (1, 2, 0)).astype('uint8'), mode='RGB')
+            depth_pred = Image.fromarray(array_outputs[i][0].astype("uint8"), mode='L')
+            mask_pred = Image.fromarray(array_outputs[i][1].astype("uint8"), mode='L')
+            normals_pred = Image.fromarray(np.transpose(array_outputs[i][2:5], (1, 2, 0)).astype("uint8"), mode='RGB')
+            p_1_pred = Image.fromarray(np.transpose(array_outputs[i][5:], (1, 2, 0)).astype("uint8"), mode='RGB')
+
+            table.add_data(
+                image_path[i].split('/')[-1],
+                wandb.Image(input_image),
+                wandb.Image(depth_pred),
+                wandb.Image(mask_pred),
+                wandb.Image(normals_pred),
+                wandb.Image(p_1_pred),
+                epoch
+            )
+
+    wandb.log({
+        table_name: table,
+    })
+
+
 def create_examples_tables(model, data_loader, device, epoch, image_names, table_name):
     table = wandb.Table(
         columns=[
