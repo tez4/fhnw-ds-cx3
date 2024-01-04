@@ -4,3 +4,4 @@
 /input/**
 /wandb/**
 /config_local.json
+/models/**
