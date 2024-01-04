@@ -4,7 +4,7 @@ import numpy as np
 import scipy.ndimage as ndi
 
 
-def mean_pixel_distance(outputs, targets):
+def mean_squared_error(outputs, targets):
     assert outputs.shape == targets.shape, "output and target shapes must be equal"
     assert len(outputs.shape) == 4, "outputs and targets must be 4D tensors (batch, channels, height, width)"
 

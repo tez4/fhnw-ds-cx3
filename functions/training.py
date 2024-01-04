@@ -8,7 +8,7 @@ from PIL import Image
 from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime
-from scores import mean_pixel_distance
+from scores import mean_squared_error
 from tables import create_examples_tables, create_real_tables, get_video_arrays, create_video_tables
 
 
@@ -38,7 +38,7 @@ class Trainer:
         self.val_loader = val_loader
         self.real_loader = real_loader
 
-        self.best_val_acc = 0.0
+        self.best_val_mse = 0.0
         self.best_val_loss = float('inf')
         self.best_epoch = 0
         self.num_epochs_without_improvement = 0
@@ -84,7 +84,7 @@ class Trainer:
         self.model.train()
         self.discriminator.train()
         running_train_loss = []
-        running_train_acc = []
+        running_train_mse = []
         for i, (inputs, targets, _) in enumerate(self.train_loader):
             if self.config["is_test_batch"] and i > 1:
                 break
@@ -114,17 +114,17 @@ class Trainer:
             self.optimizer.step()
 
             running_train_loss.append(loss.item())
-            running_train_acc.append(mean_pixel_distance(outputs, targets).mean().item())
+            running_train_mse.append(mean_squared_error(outputs, targets).mean().item())
 
         self.train_loss = np.mean(running_train_loss)
-        self.train_acc = np.mean(running_train_acc)
+        self.train_mse = np.mean(running_train_mse)
 
         print(f"Trained epoch {step + 1}/{self.config['epochs']}")
 
     def validate(self, step: int):
         self.model.eval()
         running_val_loss = []
-        running_val_acc = []
+        running_mse = []
         with torch.no_grad():
 
             # log_images(model, config, test_loader, device, step + 1, epoch_confidence_images)
@@ -138,10 +138,10 @@ class Trainer:
                 loss = self.criterion(outputs, targets)
 
                 running_val_loss.append(loss.item())
-                running_val_acc.append(mean_pixel_distance(outputs, targets).mean().item())
+                running_mse.append(mean_squared_error(outputs, targets).mean().item())
 
         self.val_loss = np.mean(running_val_loss)
-        self.val_acc = np.mean(running_val_acc)
+        self.val_mse = np.mean(running_mse)
 
         if self.val_loss < self.best_val_loss:
             self.best_val_loss = self.val_loss
@@ -150,16 +150,16 @@ class Trainer:
         else:
             self.num_epochs_without_improvement += 1
 
-        if self.val_acc > self.best_val_acc:
-            self.best_val_acc = self.val_acc
+        if self.val_mse > self.best_val_mse:
+            self.best_val_mse = self.val_mse
 
     def log_values(self, step: int):
         wandb.log({
             "epoch": step + 1,
             "Loss/a_train_loss": self.train_loss,
             "Loss/b_val_loss": self.val_loss,
-            "Acc/a_train_acc": self.train_acc,
-            "Acc/b_val_acc": self.val_acc,
+            "MSE/a_train_mse": self.train_mse,
+            "MSE/b_val_mse": self.val_mse,
         })
 
         self.video_arrays = get_video_arrays(
@@ -178,12 +178,12 @@ class Trainer:
             )
 
         print(f"Validated epoch {step + 1}/{self.config['epochs']}")
-        print(f"Acc: {round(self.train_acc, 5)}, Validation Acc: {round(self.val_acc, 5)}")
+        print(f"MSE: {round(self.train_mse, 5)}, Validation MSE: {round(self.val_mse, 5)}")
 
     def finish_training(self, step):
         wandb.log({
             "Loss/c_best_val_loss": self.best_val_loss,
-            "Acc/c_best_val_acc": self.best_val_acc,
+            "MSE/c_best_val_mse": self.best_val_mse,
         })
 
         create_video_tables(self.video_arrays, 'Videos/Validation Video Examples')
@@ -200,7 +200,7 @@ class Trainer:
 
         wandb.finish()
 
-        print(f"FINISHED! Best epoch: {self.best_epoch}, Best Accuracy: {self.best_val_acc}")
+        print(f"FINISHED! Best epoch: {self.best_epoch}, Best MSE: {self.best_val_mse}")
 
     def save_model(self, path: str = './models/'):
         self.model.eval()

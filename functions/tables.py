@@ -8,7 +8,7 @@ import pandas as pd
 import torchvision.transforms as transforms
 from PIL import Image, ImageDraw
 from pathlib import Path
-from scores import mean_pixel_distance
+from scores import mean_squared_error
 
 
 def create_real_tables(model, data_loader, device, epoch, table_name):
@@ -87,7 +87,7 @@ def create_examples_tables(model, data_loader, device, epoch, image_names, table
         inputs = inputs.to('cpu')
         outputs = outputs.to('cpu')
 
-        pixel_acc = mean_pixel_distance(outputs, targets)
+        pixel_acc = mean_squared_error(outputs, targets)
 
         array_inputs = np.array(inputs * 255)
         array_targets = np.array(targets * 255)
