@@ -36,8 +36,26 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError()
 
-    model = UNet(3, 8, config['bilinear'], config['attention'])
-    discriminator = Discriminator(11)
+    if config["multi_task_learning"]:
+        if config["name"] == "BaseNet":
+            model = BaseNet(3, 8)
+        elif config["name"] == "UNet":
+            model = UNet(3, 8, config['bilinear'], config['attention'])
+        else:
+            raise NotImplementedError()
+    else:
+        if config["name"] == "BaseNet":
+            model = BaseNet(3, 3)
+        elif config["name"] == "UNet":
+            model = UNet(3, 3, config['bilinear'], config['attention'])
+        else:
+            raise NotImplementedError()
+
+    if config["multi_task_learning"]:
+        discriminator = Discriminator(11)
+    else:
+        discriminator = Discriminator(6)
+
     # model = torch.load("./models/model_UNet_24.11.2023_0033.pth", map_location=torch.device('cpu'))
 
     optimizer = torch.optim.Adam(model.parameters(), lr=config["lr"])

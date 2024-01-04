@@ -21,6 +21,7 @@ class SegmentationDataset(Dataset):
         self.is_real_dataset = is_real_dataset
         self.color_jitter = config["color_jitter"]
         self.random_horizontal_flip = config["random_horizontal_flip"]
+        self.multi_task_learning = config["multi_task_learning"]
 
         transformations_input = []
         transformations_output = []
@@ -55,9 +56,10 @@ class SegmentationDataset(Dataset):
         input_image = Image.open(f"{self.image_paths[idx]}/input.png")
 
         if not self.is_real_dataset:
-            distance_image = Image.open(f"{self.image_paths[idx]}/distance.png")
-            mask_image = Image.open(f"{self.image_paths[idx]}/mask.png")
-            normals_image = Image.open(f"{self.image_paths[idx]}/normals.png")
+            if self.multi_task_learning:
+                distance_image = Image.open(f"{self.image_paths[idx]}/distance.png")
+                mask_image = Image.open(f"{self.image_paths[idx]}/mask.png")
+                normals_image = Image.open(f"{self.image_paths[idx]}/normals.png")
             output_1_image = Image.open(f"{self.image_paths[idx]}/output_1.png")
 
         seed = random.randint(0, 2**32)
@@ -65,16 +67,20 @@ class SegmentationDataset(Dataset):
         self._set_seed(seed)
         input_array = self.transform_input(input_image)
         if not self.is_real_dataset:
-            self._set_seed(seed)
-            distance_array = self.transform_output(distance_image)
-            self._set_seed(seed)
-            mask_array = self.transform_output(mask_image)
-            self._set_seed(seed)
-            normals_array = self.transform_output(normals_image)
+            if self.multi_task_learning:
+                self._set_seed(seed)
+                distance_array = self.transform_output(distance_image)
+                self._set_seed(seed)
+                mask_array = self.transform_output(mask_image)
+                self._set_seed(seed)
+                normals_array = self.transform_output(normals_image)
             self._set_seed(seed)
             output_1_array = self.transform_output(output_1_image)
 
-            output_array = torch.cat((distance_array, mask_array, normals_array, output_1_array), dim=0)
+            if self.multi_task_learning:
+                output_array = torch.cat((distance_array, mask_array, normals_array, output_1_array), dim=0)
+            else:
+                output_array = output_1_array
 
         if not self.is_real_dataset:
             return input_array, output_array, self.image_paths[idx]
@@ -179,7 +185,8 @@ if __name__ == "__main__":
             "random_horizontal_flip": False,
             "color_jitter": True,
             "dataset": "./input/experiment_95_preprocessed",
-            "num_workers": 0
+            "num_workers": 0,
+            "multi_task_learning": True
         },
         shuffle=True
     )

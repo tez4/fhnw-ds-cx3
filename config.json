@@ -18,5 +18,6 @@
     "loss_lambda": 0.01,
     "has_discriminator": true,
     "bilinear": true,
-    "attention": true
+    "attention": true,
+    "multi_task_learning": true
 }
