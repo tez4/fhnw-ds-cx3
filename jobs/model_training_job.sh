@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -p performance
-#SBATCH -t 1-00:00:00
+#SBATCH -t 2-00:00:00
 #SBATCH --gpus=4
 #SBATCH --job-name=model_training
 #SBATCH --output=outerr.log
