@@ -34,7 +34,7 @@
     - [01.11.2023 - Stil der Produktfotos](#01112023---stil-der-produktfotos)
     - [29.11.2023 - Erste Bildserie und erstes Modell](#29112023---erste-bildserie-und-erstes-modell)
     - [13.12.2023 - Ausblick auf Fertigstellung](#13122023---ausblick-auf-fertigstellung)
-    - [10.01.2023 - letztes Meeting vor Abgabe](#10012023---letztes-meeting-vor-abgabe)
+    - [10.01.2024 - letztes Meeting vor Abgabe](#10012024---letztes-meeting-vor-abgabe)
 
 ## Idee
 
@@ -220,7 +220,7 @@ Beim Meeting waren Adrian, Moritz und Joël anwesend.
 - Dokumentation soll aktualisiert werden.
 - In der Dokumentation kann über die Erfüllung der Lernziele reflektiert werden.
 
-### 10.01.2023 - letztes Meeting vor Abgabe
+### 10.01.2024 - letztes Meeting vor Abgabe
 
 Beim Meeting waren Adrian, Moritz und Joël anwesend.
 
