@@ -23,8 +23,8 @@
     - [Produktbild verbessern](#produktbild-verbessern)
     - [Bilder auf SLURM-Cluster generieren](#bilder-auf-slurm-cluster-generieren)
     - [Speicherplatz optimieren](#speicherplatz-optimieren)
-    - [Post-Processing auf Bildern durchführen](#post-processing-auf-bildern-durchführen)
     - [Modell trainieren](#modell-trainieren)
+    - [Ausblick](#ausblick)
   - [Reflexion Lernziele](#reflexion-lernziele)
   - [Meeting Notizen](#meeting-notizen)
     - [18.09.2023 - Kickoff und Definition der Lernziele](#18092023---kickoff-und-definition-der-lernziele)
@@ -34,6 +34,7 @@
     - [01.11.2023 - Stil der Produktfotos](#01112023---stil-der-produktfotos)
     - [29.11.2023 - Erste Bildserie und erstes Modell](#29112023---erste-bildserie-und-erstes-modell)
     - [13.12.2023 - Ausblick auf Fertigstellung](#13122023---ausblick-auf-fertigstellung)
+    - [10.01.2023 - letztes Meeting vor Abgabe](#10012023---letztes-meeting-vor-abgabe)
 
 ## Idee
 
@@ -50,6 +51,15 @@ Ein weiterer entscheidender Vorteil von Blender ist seine Kompatibilität mit Py
 Darüber hinaus bietet Blender eine umfangreiche Community und eine Vielzahl von Ressourcen, die den Einstieg und die Problembehandlung erleichtern. Die Open-Source-Natur von Blender fördert eine kollaborative Umgebung, in der ständig neue Plugins und Funktionen entwickelt werden, die sich ideal für innovative und experimentelle Projekte im Bereich Data Science eignen.
 
 ### Aufbau der Bildgenerierung
+
+Welche Arten von Randomness wurden hinzugefügt?
+
+- Produktausrichtung (Rotation um y-Achse)
+- Grösse des Raums
+- Grösse und Anzahl der Fenster
+- Texturen (Wände, Boden und Decke)
+- Licht (HDRI und Orientierung des HRDIs)
+- Kamera (Position, Zoom, Fokus, Rotation entlang y-Achse)
 
 Folgende Dinge müssen noch im Detail dokumentiert werden:
 
@@ -74,23 +84,54 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 ### Produktbild verbessern
 
+- Qualitätskriterien für Bilder
+- Die Bilder müssen mit Script nachbearbeitet werden, da Blender nicht fähig ist, die Bilder so zu generieren wie Joël sich das vorstellt.
+- Finale Produktbilder und andere Bilder in Übersicht
+
 ![Generierte Bilder](images/generated_images.png "Generierte Bilder")
 
 ### Bilder auf SLURM-Cluster generieren
 
+- Generierung von Bilder auf SLURM ist nötig, weil lokal zu langsam
+- Es stellt sich als relativ schwierig heraus und es gibt nicht einfach eine Anleitung im Internet
+- Joël bringt es Hilfe von Moritz zum laufen.
+- Erklärung finaler Lösung
+
 ### Speicherplatz optimieren
 
-### Post-Processing auf Bildern durchführen
+- Speicherplatz für die Bilder konnte stark optimiert werden. Dies einfach nur durch das Löschen von Kanälen
 
 ### Modell trainieren
 
 - no geometric transformations (normals are broken)
+- Erste Architektur ist U-Net, da schnell, gut und einfach.
 
 ![U-Net](images/u_net.png "U-Net")
 
+- Versuch das Modell mit Multi-Task learning zu verbessern
+- Was ist es, was sollte es bringen und wie gut funktioniere es tatsächlich?
+
 ![U-Net multi-task learning](images/u_net_multi_task.png "U-Net multi-task learning")
 
+- Versuch das Modell durch das Nutzen von einem Discriminator zu verbessern
+
 ![Pix2Pix](images/pix2pix.png "Pix2Pix")
+
+### Ausblick
+
+Was hätte ich anders machen sollen?
+
+- Blender hat sich als Aufwändig herausgestellt.
+- Früher Modelle trainieren und auf echten Bildern testen, um Anpassungen an der Bildgenerierung vornehmen zu können.
+
+Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
+
+- Modell ohne Surface Normals trainieren und dabei Data Augmentation aktivieren / erweitern
+- Bilder mit mehr verschiedenen Hintergründen generieren. Dabei auch Weisse und Flache Hintergründe verwenden.
+- Nachbearbeitung hinzufügen. Korn der Kamera / gewisse Unschärfe und Surface imperfections.
+- Diversität der Bilder weiter erhöhen durch weitere Bilder nicht direkt nur vor Wand, sondern auch vor Schrank, Fussliste.
+- Weitere Objekte im Raum, um Licht evtl. zu beeinflussen.
+- Bessere Assets verwenden, welche Texturen mit Tiefe haben.
 
 ## Reflexion Lernziele
 
@@ -178,3 +219,12 @@ Beim Meeting waren Adrian, Moritz und Joël anwesend.
 - Bilineares Upsampling soll ausprobiert werden, um Schachbrettmuster von Output-Bildern zu entfernen.
 - Dokumentation soll aktualisiert werden.
 - In der Dokumentation kann über die Erfüllung der Lernziele reflektiert werden.
+
+### 10.01.2023 - letztes Meeting vor Abgabe
+
+Beim Meeting waren Adrian, Moritz und Joël anwesend.
+
+- Joël erzählt von den Experimenten, welche er in den letzten Wochen gemacht hat.
+- Die Ergebnisse der Experimente werden gemeinsam reflektiert und diskutiert.
+- Der Ausblick und die Limitationen der Arbeit werden besprochen.
+- Einige Details zu der Abgabe und der Präsentation werden besprochen.
