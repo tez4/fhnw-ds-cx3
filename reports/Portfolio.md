@@ -144,6 +144,8 @@ Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 - Weitere Objekte im Raum, um Licht evtl. zu beeinflussen.
 - Bessere Assets verwenden, welche Texturen mit Tiefe haben.
 
+![Ceci n'est pas un produit.](images/magritte_comment.png "Ceci n'est pas un produit")
+
 ## Reflexion Lernziele
 
 ## Meeting Notizen
