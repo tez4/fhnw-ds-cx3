@@ -74,6 +74,8 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 ### Produktbild verbessern
 
+![Generierte Bilder](images/generated_images.png "Generierte Bilder")
+
 ### Bilder auf SLURM-Cluster generieren
 
 ### Speicherplatz optimieren
@@ -82,11 +84,13 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 ### Modell trainieren
 
+- no geometric transformations (normals are broken)
+
 ![U-Net](images/u_net.png "U-Net")
 
 ![U-Net multi-task learning](images/u_net_multi_task.png "U-Net multi-task learning")
 
-- no geometric transformations (normals are broken)
+![Pix2Pix](images/pix2pix.png "Pix2Pix")
 
 ## Reflexion Lernziele
 
