@@ -24,6 +24,7 @@
     - [Bilder auf SLURM-Cluster generieren](#bilder-auf-slurm-cluster-generieren)
     - [Speicherplatz optimieren](#speicherplatz-optimieren)
     - [Modell trainieren](#modell-trainieren)
+    - [Qualitative Ergebnisse](#qualitative-ergebnisse)
     - [Ausblick](#ausblick)
   - [Reflexion Lernziele](#reflexion-lernziele)
   - [Meeting Notizen](#meeting-notizen)
@@ -116,6 +117,16 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 - Versuch das Modell durch das Nutzen von einem Discriminator zu verbessern
 
 ![Pix2Pix](images/pix2pix.png "Pix2Pix")
+
+### Qualitative Ergebnisse
+
+![Predictions on Real Images](images/real_image_test.png "Predictions on Real Images")
+
+- Auf echten Bildern kann das Modell nicht korrekt zwischen Hintergrund und Vordergrund unterscheiden
+
+![Filter Prediction Example](images/real_image_filters.png "Filter Prediction Example")
+
+- Abgesehen von den Stellen, an denen das Modell nicht korrekt unterscheiden kann, sieht es auf allen Masken gut aus.
 
 ### Ausblick
 
