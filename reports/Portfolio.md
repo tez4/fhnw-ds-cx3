@@ -39,6 +39,8 @@
 
 ## Idee
 
+![Ziel des Projekts](images/project_goal.png "Ziel des Projekts")
+
 ## Experimentenreihe
 
 ### Entscheidung für Blender
@@ -52,6 +54,8 @@ Ein weiterer entscheidender Vorteil von Blender ist seine Kompatibilität mit Py
 Darüber hinaus bietet Blender eine umfangreiche Community und eine Vielzahl von Ressourcen, die den Einstieg und die Problembehandlung erleichtern. Die Open-Source-Natur von Blender fördert eine kollaborative Umgebung, in der ständig neue Plugins und Funktionen entwickelt werden, die sich ideal für innovative und experimentelle Projekte im Bereich Data Science eignen.
 
 ### Aufbau der Bildgenerierung
+
+![Bildgenerierung](images/image_generation.png "Bildgenerierung")
 
 Welche Arten von Randomness wurden hinzugefügt?
 
