@@ -109,10 +109,14 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 ![U-Net](images/u_net.png "U-Net")
 
+![Predictions on Generated Images](images/generated_image_test.png "Predictions on Generated Images")
+
 - Versuch das Modell mit Multi-Task learning zu verbessern
 - Was ist es, was sollte es bringen und wie gut funktioniere es tatsächlich?
 
 ![U-Net multi-task learning](images/u_net_multi_task.png "U-Net multi-task learning")
+
+![Filter Predictions on Generated Images](images/generated_image_filters.png "Filter Predictions on Generated Images")
 
 - Versuch das Modell durch das Nutzen von einem Discriminator zu verbessern
 
