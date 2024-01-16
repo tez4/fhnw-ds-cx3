@@ -57,21 +57,39 @@ Darüber hinaus bietet Blender eine umfangreiche Community und eine Vielzahl von
 
 ### Aufbau der Bildgenerierung
 
-Wie sollten die generierten Bilder aussehen?
-
-- Die Bilder sollten realistisch und wie echte Fotos aussehen.
+Das Ziel der Bildgenerierung ist es, möglichst realistische Bildpaare zu generieren. Dies ist wichtig, da das auf den synthetischen Bildern trainierte Modell auch auf echten Bildern funktionieren soll. Nun werde ich auf mein Vorgehen eingehen, das dies ermöglichen soll.
 
 ![Bildgenerierung](images/image_generation.png "Bildgenerierung")
 
-- Beschreibung verschiedener Typen von Elementen in Blender (HDRI, Objekt, Textur)
+Grundsätzlich soll ein Input Bild generiert werden, bei welchem das Produkt in einem Raum steht, und ein Output Bild, bei welchem das Produkt gut beleuchtet vor einem weissen Hintergrund steht. Wie man auf der Abbildung sehen kann, wird dafür zum Rendern der Bilder in Blender eine virtuelle Kamera platziert.
 
-Welche Arten von Randomness wurden hinzugefügt?
+Um realistische Bilder generieren zu können brauchte ich ein paar Dinge: 3D-Modelle von Inneneinrichtungsgegenständen, Texturen für den Raum und HDRIs für die Hintergründe und das Licht. Ich werde nun noch kurz auf diese Dinge eingehen.
+
+Für die Inneneinrichtungsgegenstände habe ich [interior models](https://www.blendermarket.com/products/1000-interior-models) verwendet. Dies ist ein Paket von ca. 2500 verschiedenen Gegenständen, welche ich für ca. 70 CHF gekauft habe. Leider konnte ich ein grosses Paket von gratis Assets von hoher Qualität finden und habe mich deshalb für diese entschieden.
+
+Um realistisches Licht und zugleich Hintergründe bei Fenstern zu erreichen, kann man HDRIs verwenden. Die HDRIs habe ich von [polyhaven](https://polyhaven.com/hdris) heruntergeladen, diese sind alle gratis und haben sehr gute Qualität.
+
+Auch die Texturen für den Raum habe ich von [polyhaven](https://polyhaven.com/textures) heruntergeladen. Diese haben ebenfalls eine sehr hohe Qualität und erlauben es sehr einfach realistische Oberflächen zu erreichen, welche realistisch mit dem Licht in der Szene interagieren.
+
+Um Bildpaare zu generieren, habe ich mein Programm dann so strukturiert, dass es vereinfacht folgenden Ablauf für jedes Bildpaar durchläuft:
+
+- Produkt Platzieren
+- Produktgrösse herausfinden
+- Kamera aufgrund der Produktgrösse platzieren und ausrichten
+- Licht, HDRI und Oberflächen platzieren
+- Produktbild generieren (Output Bild)
+- Oberflächen entfernen
+- Licht und HDRI anpassen
+- Raum basierend auf Produktgrösse und Kameraposition generieren
+- Input Bild generieren (Bild mit Produkt und Raum)
+
+Damit meine Bilder nicht für das gleiche Produkt immer gleich aussehen, sondern eine natürliche Variation aufweisen, musste ich auf einige verschiedene Arten Zufälligkeit bei der Bildgenerierung hinzufügen. Diese musste immer so abgestimmt werden, dass sie in jedem Fall zu "realistischen" Resultaten führte. Folgende Arten von Zufälligkeit habe ich hinzugefügt:
 
 - Produktausrichtung (Rotation um y-Achse)
 - Grösse des Raums
 - Grösse und Anzahl der Fenster
 - Texturen (Wände, Boden und Decke)
-- Licht (HDRI und Orientierung des HRDIs)
+- Licht (HDRI und Orientierung des HRDIs und Raumlicht, wenn zu wenig hell)
 - Kamera (Position, Zoom, Fokus, Rotation entlang y-Achse)
 
 Folgende Dinge müssen noch im Detail dokumentiert werden:
