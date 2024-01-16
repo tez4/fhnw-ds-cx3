@@ -115,6 +115,14 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 ![Predictions on Generated Images](images/generated_image_test.png "Predictions on Generated Images")
 
+| Anzahl Bilder | MSE    |
+| ------------: | ------ |
+|           100 | 0.0305 |
+|           333 | 0.0082 |
+|          1000 | 0.0042 |
+|          3333 | 0.0026 |
+|         10000 | 0.0017 |
+
 - Versuch das Modell mit Multi-Task learning zu verbessern
 - Was ist es, was sollte es bringen und wie gut funktioniere es tatsächlich?
 
@@ -122,9 +130,21 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 ![Filter Predictions on Generated Images](images/generated_image_filters.png "Filter Predictions on Generated Images")
 
+| Multi-Task Learning | MSE     |
+| ------------------: | ------- |
+|              Falsch | 0.00172 |
+|                Wahr | 0.00176 |
+
 - Versuch das Modell durch das Nutzen von einem Discriminator zu verbessern
 
 ![Pix2Pix](images/pix2pix.png "Pix2Pix")
+
+| Architektur | MSE     |
+| ----------: | ------- |
+|       U-Net | 0.00169 |
+|     pix2pix | 0.00172 |
+
+- Das Lambda verändern hatte keinen Effekt auf das quantitative Ergebnis.
 
 ### Qualitative Ergebnisse
 
