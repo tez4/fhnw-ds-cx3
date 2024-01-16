@@ -18,6 +18,8 @@
   - [Experimentenreihe](#experimentenreihe)
     - [Entscheidung für Blender](#entscheidung-für-blender)
     - [Aufbau der Bildgenerierung](#aufbau-der-bildgenerierung)
+    - [Auswahl von Cycles Blender renderer](#auswahl-von-cycles-blender-renderer)
+    - [Probleme und Lösungen bei Blender abstürzen](#probleme-und-lösungen-bei-blender-abstürzen)
     - [Erste Bildpaare](#erste-bildpaare)
     - [Visualisierungen von Normalen und Distanz zur Kamera](#visualisierungen-von-normalen-und-distanz-zur-kamera)
     - [Produktbild verbessern](#produktbild-verbessern)
@@ -55,7 +57,13 @@ Darüber hinaus bietet Blender eine umfangreiche Community und eine Vielzahl von
 
 ### Aufbau der Bildgenerierung
 
+Wie sollten die generierten Bilder aussehen?
+
+- Die Bilder sollten realistisch und wie echte Fotos aussehen.
+
 ![Bildgenerierung](images/image_generation.png "Bildgenerierung")
+
+- Beschreibung verschiedener Typen von Elementen in Blender (HDRI, Objekt, Textur)
 
 Welche Arten von Randomness wurden hinzugefügt?
 
@@ -68,12 +76,19 @@ Welche Arten von Randomness wurden hinzugefügt?
 
 Folgende Dinge müssen noch im Detail dokumentiert werden:
 
-- grundsätzlicher Aufbau der Blender Image generation
-- Beschreibung verschiedener Typen von Elementen in Blender (HDRI, Objekt, Textur)
-- Beschreibung Entscheidung Auswahl von Cycles Blender renderer
-- Beschreibung verschiedener Arten von Randomness, welche bei Generation hinzugefügt wurden
 - Beschreibung was Bilder noch realistischer machen könnte (Grain, Blur, Focus, Surface Imperfections)
-- Probleme und Lösungen bei Blender abstürzen
+
+### Auswahl von Cycles Blender renderer
+
+- Blender wurde original ausgewählt, unter der Annahme den schnelle Eevee Renderer zu verwenden
+- Eevee Renderer ist nicht in der Lage, die benötigten Informationen zu generieren
+- Cycles Renderer ist in der Lage, die benötigten Informationen zu generieren
+- Cycles Renderer ist sehr langsam
+
+### Probleme und Lösungen bei Blender abstürzen
+
+- Probleme mit Blender abstürzen
+- Lösung: `bpy.ops` nicht verwenden, sondern lower level API
 
 ### Erste Bildpaare
 
@@ -99,7 +114,7 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 - Generierung von Bilder auf SLURM ist nötig, weil lokal zu langsam
 - Es stellt sich als relativ schwierig heraus und es gibt nicht einfach eine Anleitung im Internet
-- Joël bringt es Hilfe von Moritz zum laufen.
+- Joël bringt es mit Hilfe von Moritz zum laufen.
 - Erklärung finaler Lösung
 
 ### Speicherplatz optimieren
@@ -110,6 +125,7 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 - no geometric transformations (normals are broken)
 - Erste Architektur ist U-Net, da schnell, gut und einfach.
+- Baseline Modell ist U-Net
 
 ![U-Net](images/u_net.png "U-Net")
 
@@ -162,6 +178,8 @@ Was hätte ich anders machen sollen?
 
 - Blender hat sich als Aufwändig herausgestellt.
 - Früher Modelle trainieren und auf echten Bildern testen, um Anpassungen an der Bildgenerierung vornehmen zu können.
+- Bewertungskriterien für generierte Bilder definieren und diese in der Bildgenerierung berücksichtigen
+- Dokumentation früher beginnen und geupdatet halten
 
 Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 
@@ -175,6 +193,22 @@ Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 ![Ceci n'est pas un produit.](images/magritte_comment.png "Ceci n'est pas un produit")
 
 ## Reflexion Lernziele
+
+| ID   | Lernziel                                                                | Erfüllung    |
+| :--- | :---------------------------------------------------------------------- | ------------ |
+| K2L3 | Ein Data Science Projekt ausführen können.                              | Beschreibung |
+| K2L4 | Code systematisch strukturieren und testen können                       | Beschreibung |
+| K3L2 | Strategie, Methoden und Resultaten analysieren und evaluieren können    | Beschreibung |
+| K3L3 | Code dokumentieren und versionieren können                              | Beschreibung |
+| K4L3 | Projekt durchführen können                                              | Beschreibung |
+| K6L2 | Kritisch Denken und Handeln                                             | Beschreibung |
+| K7L2 | Lernbereitschaft zeigen                                                 | Beschreibung |
+| K5L1 | Mit Beteiligten kommunizieren und zusammenarbeiten können               | Beschreibung |
+| K3L4 | Reproduzierbarkeit und Deployment sicherstellen können                  | Beschreibung |
+| K6L1 | Kreativ sein und innovativ denken können                                | Beschreibung |
+| K7L1 | Zuverlässig sein und Eigeninitiative und Motivation zeigen              | Beschreibung |
+| K7L3 | Reflexionsfähigkeit zeigen                                              | Beschreibung |
+| K5L2 | Zwischen- und Endresultate mündlich und schriftlich präsentieren können | Beschreibung |
 
 ## Meeting Notizen
 
