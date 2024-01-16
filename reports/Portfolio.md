@@ -23,9 +23,9 @@
     - [Produktbild verbessern](#produktbild-verbessern)
     - [Bilder auf SLURM-Cluster generieren](#bilder-auf-slurm-cluster-generieren)
     - [Speicherplatz optimieren](#speicherplatz-optimieren)
-    - [U-Net trainieren](#u-net-trainieren)
+    - [U-Net Modell trainieren](#u-net-modell-trainieren)
     - [U-Net Multi-Task Learning](#u-net-multi-task-learning)
-    - [pix2pix Trainieren](#pix2pix-trainieren)
+    - [pix2pix Modell trainieren](#pix2pix-modell-trainieren)
     - [Qualitative Ergebnisse](#qualitative-ergebnisse)
     - [Ausblick](#ausblick)
   - [Reflexion Lernziele](#reflexion-lernziele)
@@ -112,10 +112,19 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 - Qualitätskriterien für Bilder
 - Die Bilder müssen mit Script nachbearbeitet werden, da Blender nicht fähig ist, die Bilder so zu generieren wie Joël sich das vorstellt.
-- Finale Produktbilder und andere Bilder in Übersicht
 - Beschreibung was Bilder noch realistischer machen könnte (Grain, Blur, Focus, Surface Imperfections)
+- Finale Produktbilder und andere Bilder in Übersicht
 
 ![Generierte Bilder](images/generated_images.png "Generierte Bilder")
+
+- Grösse des Finalen Datensatzes
+
+| Datensatz    | Anzahl |
+| :----------- | -----: |
+| Training     |  11233 |
+| Validation   |   3210 |
+| Test         |   1605 |
+| echte Bilder |     24 |
 
 ### Bilder auf SLURM-Cluster generieren
 
@@ -129,7 +138,7 @@ Da ich sehr viele Bilder generierte, brauchten diese sehr viel Speicherplatz. Da
 
 Es könnten noch weitere Dinge gemacht werden, um den Speicherplatzbedarf zu reduzieren, aber viele davon würden zu einer Reduktion der Datenqualität führen oder sehr viel Rechenleistung beanspruchen. Ein Beispiel dafür ist der Wechsel in vom PNG-Bildformat ins JPG-Bildformat, was ich unterlassen habe, da JPG im Gegensatz zu PNG keine verlustfreie Komprimierung zulässt. Selbst das starke Komprimieren der Bilder im PNG Format habe ich unterlassen, da dies relativ Rechenintensiv ist, und nur wenig Speicherplatz spart.
 
-### U-Net trainieren
+### U-Net Modell trainieren
 
 ![U-Net](images/u_net.png "U-Net")
 
@@ -159,15 +168,17 @@ Zum Vergleich der Modelle verwende ich den Mean Squared Error (MSE) auf den Vali
 ![U-Net multi-task learning](images/u_net_multi_task.png "U-Net multi-task learning")
 
 ![Filter Predictions on Generated Images](images/generated_image_filters.png "Filter Predictions on Generated Images")
+![Bad Filter Predictions on Generated Images](images/generated_image_filters_bad.png "Bad Filter Predictions on Generated Images")
 
 | Multi-Task Learning | MSE     |
 | ------------------: | ------- |
 |              Falsch | 0.00172 |
 |                Wahr | 0.00176 |
 
-### pix2pix Trainieren
+### pix2pix Modell trainieren
 
 - Versuch das Modell durch das Nutzen von einem Discriminator zu verbessern
+- [pix2pix Paper](https://arxiv.org/abs/1611.07004)
 
 ![Pix2Pix](images/pix2pix.png "Pix2Pix")
 
@@ -192,21 +203,22 @@ Zum Vergleich der Modelle verwende ich den Mean Squared Error (MSE) auf den Vali
 
 Was hätte ich anders machen sollen?
 
-- Blender hat sich als Aufwändig herausgestellt.
 - Früher Modelle trainieren und auf echten Bildern testen, um Anpassungen an der Bildgenerierung vornehmen zu können.
+- Metrik auf den echten Daten nutzen (beispielsweise DICE auf Maske)
 - Bewertungskriterien für generierte Bilder definieren und diese in der Bildgenerierung berücksichtigen
 - Dokumentation früher beginnen und geupdatet halten
 
 Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 
 - Modell ohne Surface Normals trainieren und dabei Data Augmentation aktivieren / erweitern
-- Bilder mit mehr verschiedenen Hintergründen generieren. Dabei auch Weisse und Flache Hintergründe verwenden.
-- Nachbearbeitung hinzufügen. Korn der Kamera / gewisse Unschärfe und Surface imperfections.
 - Diversität der Bilder weiter erhöhen durch weitere Bilder nicht direkt nur vor Wand, sondern auch vor Schrank, Fussliste.
+- Bilder mit mehr verschiedenen Hintergründen generieren. Dabei auch Weisse und Flache Hintergründe verwenden.
+- Realismus der Bilder weiter erhöhen
+- Nachbearbeitung hinzufügen. Korn der Kamera / gewisse Unschärfe und Surface imperfections (Oberflächenmängel).
 - Weitere Objekte im Raum, um Licht evtl. zu beeinflussen.
 - Bessere Assets verwenden, welche Texturen mit Tiefe haben.
+- weitere Metriken um Modelle besser vergleichen zu können. (Schärfe, Segmentierung, ...)
 - Cycle GAN
-- weitere Metriken zum Modelle besser vergleichen zu können.
 
 ![Ceci n'est pas un produit.](images/magritte_comment.png "Ceci n'est pas un produit")
 
