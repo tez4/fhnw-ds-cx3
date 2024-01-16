@@ -18,14 +18,14 @@
   - [Experimentenreihe](#experimentenreihe)
     - [Entscheidung für Blender](#entscheidung-für-blender)
     - [Aufbau der Bildgenerierung](#aufbau-der-bildgenerierung)
-    - [Auswahl von Cycles Blender renderer](#auswahl-von-cycles-blender-renderer)
-    - [Probleme und Lösungen bei Blender abstürzen](#probleme-und-lösungen-bei-blender-abstürzen)
     - [Erste Bildpaare](#erste-bildpaare)
     - [Visualisierungen von Normalen und Distanz zur Kamera](#visualisierungen-von-normalen-und-distanz-zur-kamera)
     - [Produktbild verbessern](#produktbild-verbessern)
     - [Bilder auf SLURM-Cluster generieren](#bilder-auf-slurm-cluster-generieren)
     - [Speicherplatz optimieren](#speicherplatz-optimieren)
-    - [Modell trainieren](#modell-trainieren)
+    - [U-Net trainieren](#u-net-trainieren)
+    - [U-Net Multi-Task Learning](#u-net-multi-task-learning)
+    - [pix2pix Trainieren](#pix2pix-trainieren)
     - [Qualitative Ergebnisse](#qualitative-ergebnisse)
     - [Ausblick](#ausblick)
   - [Reflexion Lernziele](#reflexion-lernziele)
@@ -41,7 +41,11 @@
 
 ## Idee
 
+Die Idee dieser Arbeit ist es, Produktbilder zu "verschönern". Dies bedeutet den Hintergrund von den Produktbildern zu entfernen und die Beleuchtung der Bilder zu verbessern. Um ein solches Modell zu ermöglichen, braucht es Trainingsdaten. Da solche Daten nur sehr umständlich als echte Bilder gesammelt werden könnten, werden die Bildpaare in dieser Arbeit mithilfe einer 3D-Grafiksoftware gerendert.
+
 ![Ziel des Projekts](images/project_goal.png "Ziel des Projekts")
+
+Genaueres zur Idee für diese Arbeit kann man im [Challenge X Exposé](challenge_x_exposé.pdf) finden.
 
 ## Experimentenreihe
 
@@ -92,22 +96,6 @@ Damit meine Bilder nicht für das gleiche Produkt immer gleich aussehen, sondern
 - Licht (HDRI und Orientierung des HRDIs und Raumlicht, wenn zu wenig hell)
 - Kamera (Position, Zoom, Fokus, Rotation entlang y-Achse)
 
-Folgende Dinge müssen noch im Detail dokumentiert werden:
-
-- Beschreibung was Bilder noch realistischer machen könnte (Grain, Blur, Focus, Surface Imperfections)
-
-### Auswahl von Cycles Blender renderer
-
-- Blender wurde original ausgewählt, unter der Annahme den schnelle Eevee Renderer zu verwenden
-- Eevee Renderer ist nicht in der Lage, die benötigten Informationen zu generieren
-- Cycles Renderer ist in der Lage, die benötigten Informationen zu generieren
-- Cycles Renderer ist sehr langsam
-
-### Probleme und Lösungen bei Blender abstürzen
-
-- Probleme mit Blender abstürzen
-- Lösung: `bpy.ops` nicht verwenden, sondern lower level API
-
 ### Erste Bildpaare
 
 Bei dem Experiment, welches auf folgendem Bild dargestellt wird, konnte ich zum ersten Mal Bildpaare von verschiedenen Pflanzen generieren. Es fällt auf, dass die Pflanze bei beiden Bildern des Bildpaares in der gleichen Position mit derselben Ausrichtung ist. Dies hilft, um dem Modell das Training zu erleichtern. Die Kamera zeigt auch immer auf die Pflanze und hat den richtigen Zoom eingestellt, damit die Pflanze einen relativ grossen Teil des Bildes ausfüllt und trotzdem ganz ins Bild passt. Beim zweiten Bild fällt auf, dass der Raum um das Produkt herum hier noch nicht fertig modelliert ist.
@@ -125,23 +113,22 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 - Qualitätskriterien für Bilder
 - Die Bilder müssen mit Script nachbearbeitet werden, da Blender nicht fähig ist, die Bilder so zu generieren wie Joël sich das vorstellt.
 - Finale Produktbilder und andere Bilder in Übersicht
+- Beschreibung was Bilder noch realistischer machen könnte (Grain, Blur, Focus, Surface Imperfections)
 
 ![Generierte Bilder](images/generated_images.png "Generierte Bilder")
 
 ### Bilder auf SLURM-Cluster generieren
 
-- Generierung von Bilder auf SLURM ist nötig, weil lokal zu langsam
-- Es stellt sich als relativ schwierig heraus und es gibt nicht einfach eine Anleitung im Internet
-- Joël bringt es mit Hilfe von Moritz zum laufen.
-- Erklärung finaler Lösung
+Die Entscheidung Blender zu nutzen habe ich unter anderem getroffen, weil ich wusste, dass Blender einen extrem schnellen Renderer names Eevee besitzt, welcher Bilder praktisch in real-time rendern kann. Ein solcher renderer erlaubt es selbst auf einem Laptop innerhalb eines Tages einen sehr grossen Datensatz zu generieren. Leider hat sich herausgestellt, dass die Qualität des Eevee Renderers für meine Zwecke nicht gut genug ist, und ich stattdessen den deutlich leistungs-intensiveren Cycles Renderer benutzen musste. Nach einigem Optimieren konnte ich auf meinem Desktoprechner Bilder genügender Qualität in ca. 30 Sekunden pro Bild generieren. Dies machte es praktisch unmöglich auf meinem Desktop-PC die nötigen Trainingsbilder zu generieren, da ich meinen Rechner mehrere Wochen komplett hätte auslasten müssen.
+
+Um dieses Problem zu lösen, habe ich mich entschieden die Bilder auf dem SLURM-CLuster des i4DS der FHNW zu generieren. Dies bedeutete jedoch auch, dass ich Blender auf dem Compute-Cluster laufen lassen musste. Dies hat sich als relativ schwierig herausgestellt, weil ich keinen Singularity Container mit der richtigen Version von Blender finden konnte. Nach einiger Recherche und zahlreichen Versuchen habe ich einen [Docker Container](https://github.com/linuxserver/docker-blender) gefunden, welcher die richtige Version (3.6.5) von Blender nutzte und auf dem Cluster tatsächlich lief. Bei diesem ganzen Prozess stand mir Moritz immer wieder zur Seite und half mir enorm weiter.
 
 ### Speicherplatz optimieren
 
 - Speicherplatz für die Bilder konnte stark optimiert werden. Dies einfach nur durch das Löschen von Kanälen
 
-### Modell trainieren
+### U-Net trainieren
 
-- no geometric transformations (normals are broken)
 - Erste Architektur ist U-Net, da schnell, gut und einfach.
 - Baseline Modell ist U-Net
 
@@ -160,6 +147,10 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 - Versuch das Modell mit Multi-Task learning zu verbessern
 - Was ist es, was sollte es bringen und wie gut funktioniere es tatsächlich?
 
+### U-Net Multi-Task Learning
+
+- no geometric transformations (normals are broken)
+
 ![U-Net multi-task learning](images/u_net_multi_task.png "U-Net multi-task learning")
 
 ![Filter Predictions on Generated Images](images/generated_image_filters.png "Filter Predictions on Generated Images")
@@ -168,6 +159,8 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 | ------------------: | ------- |
 |              Falsch | 0.00172 |
 |                Wahr | 0.00176 |
+
+### pix2pix Trainieren
 
 - Versuch das Modell durch das Nutzen von einem Discriminator zu verbessern
 
@@ -207,6 +200,7 @@ Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 - Diversität der Bilder weiter erhöhen durch weitere Bilder nicht direkt nur vor Wand, sondern auch vor Schrank, Fussliste.
 - Weitere Objekte im Raum, um Licht evtl. zu beeinflussen.
 - Bessere Assets verwenden, welche Texturen mit Tiefe haben.
+- Cycle GAN
 
 ![Ceci n'est pas un produit.](images/magritte_comment.png "Ceci n'est pas un produit")
 
