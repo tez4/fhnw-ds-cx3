@@ -125,16 +125,19 @@ Um dieses Problem zu lösen, habe ich mich entschieden die Bilder auf dem SLURM-
 
 ### Speicherplatz optimieren
 
-- Speicherplatz für die Bilder konnte stark optimiert werden. Dies einfach nur durch das Löschen von Kanälen
+Da ich sehr viele Bilder generierte, brauchten diese sehr viel Speicherplatz. Da alle Operationen, wie zum Beispiel das Herunterladen der Bilder plötzlich sehr lange brauchten, kam ich auf die Idee den Speicherplatzbedarf der Bilder zu reduzieren. Ich habe hierzu die Schwarz-Weiss Bilder mit nur einem Farbkanal abgespeichert und die restlichen mit drei statt vier Farbkanälen. Dies führte zu einer enormen Reduktion des benötigten Speichers, ohne die Qualität der Bilder zu reduzieren. Gesamthaft brauchten die generierten Bilder nach dem Optimieren des Speicherbedarfs nur noch ca. 21 % des zuvor benötigten Speicherplatzes.
+
+Es könnten noch weitere Dinge gemacht werden, um den Speicherplatzbedarf zu reduzieren, aber viele davon würden zu einer Reduktion der Datenqualität führen oder sehr viel Rechenleistung beanspruchen. Ein Beispiel dafür ist der Wechsel in vom PNG-Bildformat ins JPG-Bildformat, was ich unterlassen habe, da JPG im Gegensatz zu PNG keine verlustfreie Komprimierung zulässt. Selbst das starke Komprimieren der Bilder im PNG Format habe ich unterlassen, da dies relativ Rechenintensiv ist, und nur wenig Speicherplatz spart.
 
 ### U-Net trainieren
 
-- Erste Architektur ist U-Net, da schnell, gut und einfach.
-- Baseline Modell ist U-Net
-
 ![U-Net](images/u_net.png "U-Net")
 
+Für mein baseline Modell habe ich die U-Net Architektur ausgewählt. Ich habe diese Architektur ausgewählt, weil sie bekannt dafür ist, bei Segmentierungsproblemen gut zu funktionieren und zusätzlich einfach zu verstehen ist. Ich habe die Architektur aus dem [U-Net Paper](https://arxiv.org/abs/1505.04597) nachgebaut. Meine grösste Änderung gegenüber dem originalen Paper ist, dass der Output dieselbe Auflösung hat wie der Input.
+
 ![Predictions on Generated Images](images/generated_image_test.png "Predictions on Generated Images")
+
+Auf dieser Abbildung sind fünf zufällige Outputs des U-Nets den generierten Bildern gegenübergestellt. Wie man sehen kann, sehen die Outputs mit dem baseline Modell schon sehr gut aus. Es fallen kleine Abweichungen auf, aber generell scheint das Modell auf den synthetischen Daten gut zu funktionieren.
 
 | Anzahl Bilder | MSE    |
 | ------------: | ------ |
@@ -144,10 +147,12 @@ Um dieses Problem zu lösen, habe ich mich entschieden die Bilder auf dem SLURM-
 |          3333 | 0.0026 |
 |         10000 | 0.0017 |
 
-- Versuch das Modell mit Multi-Task learning zu verbessern
-- Was ist es, was sollte es bringen und wie gut funktioniere es tatsächlich?
+Zum Vergleich der Modelle verwende ich den Mean Squared Error (MSE) auf den Validierungsdaten. Ich habe für das U-Net ein Experiment durchgeführt, bei welchem ich es nur auf einem Teil der Trainingsdaten trainierte, um festzulegen, ob die weiteren Daten dem Modell noch helfen, weiteres zu lernen. Dies ist definitiv der Fall und das Modell mit 10'000 Bildern im Trainingsdatensatz hat mit Abstand den besten MSE.
 
 ### U-Net Multi-Task Learning
+
+- Versuch das Modell mit Multi-Task learning zu verbessern
+- Was ist es, was sollte es bringen und wie gut funktioniere es tatsächlich?
 
 - no geometric transformations (normals are broken)
 
@@ -201,6 +206,7 @@ Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 - Weitere Objekte im Raum, um Licht evtl. zu beeinflussen.
 - Bessere Assets verwenden, welche Texturen mit Tiefe haben.
 - Cycle GAN
+- weitere Metriken zum Modelle besser vergleichen zu können.
 
 ![Ceci n'est pas un produit.](images/magritte_comment.png "Ceci n'est pas un produit")
 
