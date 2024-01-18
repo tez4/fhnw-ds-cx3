@@ -160,20 +160,26 @@ Zum Vergleich der Modelle verwende ich den Mean Squared Error (MSE) auf den Vali
 
 ### U-Net Multi-Task Learning
 
-- Versuch das Modell mit Multi-Task learning zu verbessern
-- Was ist es, was sollte es bringen und wie gut funktioniere es tatsächlich?
+Die Idee hinter diesem Modell war es, dass es mehr, oder zumindest schneller die Aufgabe lernen wird, falls es mehrere verwandte Aufgaben lernen muss. Deshalb wird hier im Output nicht nur ein RGB-Bild mit 3 Layer, sondern ein gleich 4 Bilder vorhergesagt: Es werden das Produktbild (3 Layer), die Produkt-Maske (1 Layer, weil Schwarz-Weiss), die Entfernung zur Kamera (1 Layer, weil Schwarz-Weiss) und die Oberflächen-Normalen (3 Layer) vorhergesagt. Dies gibt uns also insgesamt 8 Channels im Output.
 
-- no geometric transformations (normals are broken)
+Bei einem solchen Modell, ist es wichtig, dass in form der Data Augmentation keine geometrischen Transformationen durchgeführt werden, da dies die Oberflächen-Normalen verfälschen würde. Um die Vergleichbarkeit in dieser Arbeit zu gewährleisten habe ich deshalb in der gesamten Arbeit auf geometrische Transformationen in der Data Augmentation verzichtet.
 
 ![U-Net multi-task learning](images/u_net_multi_task.png "U-Net multi-task learning")
 
-![Filter Predictions on Generated Images](images/generated_image_filters.png "Filter Predictions on Generated Images")
-![Bad Filter Predictions on Generated Images](images/generated_image_filters_bad.png "Bad Filter Predictions on Generated Images")
+Leider hat sich herausgestellt, dass in meinem Fall das Multi-Task Learning keinen starken Effekt auf das Ergebnis hatte. Der MSE auf den Validierungsdaten ist gegenüber dem U-Net praktisch gleich. Das Modell mit Multi-Task Learning lernt etwas schneller, jedoch lernt es am Ende nicht mehr, als das originale U-Net. Dies ist in meinem [Weights & Biases Report](https://api.wandb.ai/links/tez4/haj73uoz) ersichtlich.
 
 | Multi-Task Learning | MSE     |
 | ------------------: | ------- |
 |              Falsch | 0.00172 |
 |                Wahr | 0.00176 |
+
+![Filter Predictions on Generated Images](images/generated_image_filters.png "Filter Predictions on Generated Images")
+
+Auch hier fällt auf, dass das Modell für dieses Beispiel sehr gut funktioniert. Es fällt eine ganz leichte Unschärfe auf, und kleine Ungenauigkeiten an einigen Stellen. Unten rechts, ist bei diesem Bild auch ein Artefakt zu sehen. Dieses ist wahrscheinlich beim Upsampling entstanden, dies habe ich jedoch nicht genauer untersucht.
+
+![Bad Filter Predictions on Generated Images](images/generated_image_filters_bad.png "Bad Filter Predictions on Generated Images")
+
+Dies ist ein Beispiel, bei welchem das Modell einen sehr offensichtlichen Fehler bei den Normalen des Bettes gemacht hat. Ich finde es sehr interessant, dass an derselben Stelle im Produktbild auch ein Fehler entsteht. Dies ist ein Indiz dafür, dass dieselbe information in den Normalen und der Beleuchtung des Produktes verwendet wird. Somit gibt mir dies die Sicherheit, dass die Normalen sehr wohl nützlich sind, jedoch das Modell auch ohne die Hilfe von Multi-Task Learning diese Information lernen kann.
 
 ### pix2pix Modell trainieren
 
@@ -206,6 +212,7 @@ Was hätte ich anders machen sollen?
 - Früher Modelle trainieren und auf echten Bildern testen, um Anpassungen an der Bildgenerierung vornehmen zu können.
 - Metrik auf den echten Daten nutzen (beispielsweise DICE auf Maske)
 - Bewertungskriterien für generierte Bilder definieren und diese in der Bildgenerierung berücksichtigen
+- Besserer Train-Test Split (Keine Objekte, Texturen und HDRIs zwischen Training und Test teilen)
 - Dokumentation früher beginnen und geupdatet halten
 
 Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
@@ -218,7 +225,7 @@ Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 - Weitere Objekte im Raum, um Licht evtl. zu beeinflussen.
 - Bessere Assets verwenden, welche Texturen mit Tiefe haben.
 - weitere Metriken um Modelle besser vergleichen zu können. (Schärfe, Segmentierung, ...)
-- Cycle GAN
+- Unpaired image-to-image translation (CycleGAN, UNIT, StarGAN, ...)
 
 ![Ceci n'est pas un produit.](images/magritte_comment.png "Ceci n'est pas un produit")
 
