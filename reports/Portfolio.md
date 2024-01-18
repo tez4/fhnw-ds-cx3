@@ -69,9 +69,9 @@ Grundsätzlich soll ein Input Bild generiert werden, bei welchem das Produkt in 
 
 Um realistische Bilder generieren zu können brauchte ich ein paar Dinge: 3D-Modelle von Inneneinrichtungsgegenständen, Texturen für den Raum und HDRIs für die Hintergründe und das Licht. Ich werde nun noch kurz auf diese Dinge eingehen.
 
-Für die Inneneinrichtungsgegenstände habe ich [interior models](https://www.blendermarket.com/products/1000-interior-models) verwendet. Dies ist ein Paket von ca. 2500 verschiedenen Gegenständen, welche ich für ca. 70 CHF gekauft habe. Leider konnte ich ein grosses Paket von gratis Assets von hoher Qualität finden und habe mich deshalb für diese entschieden.
+Für die Inneneinrichtungsgegenstände habe ich [interior models](https://www.blendermarket.com/products/1000-interior-models) verwendet. Dies ist ein Paket von ca. 2500 verschiedenen Gegenständen, welche ich für ca. 70 CHF gekauft habe. Leider konnte ich kein grosses Paket von gratis Assets von hoher Qualität finden und habe mich deshalb für dieses kostenpflichtige Paket entschieden.
 
-Um realistisches Licht und zugleich Hintergründe bei Fenstern zu erreichen, kann man HDRIs verwenden. Die HDRIs habe ich von [polyhaven](https://polyhaven.com/hdris) heruntergeladen, diese sind alle gratis und haben sehr gute Qualität.
+Um realistisches Licht und zugleich Hintergründe bei Fenstern zu erreichen, kann man HDRIs verwenden. Ein HDRI (High Dynamic Range Image) in der 3D-Modellierung und beim Rendering ist eine 360-Grad-Panoramabildaufnahme, die zur Beleuchtung und Reflexion in einer Szene eingesetzt wird, um realistische Lichtverhältnisse und Umgebungsreflexionen zu simulieren. Die HDRIs habe ich von [polyhaven](https://polyhaven.com/hdris) heruntergeladen.
 
 Auch die Texturen für den Raum habe ich von [polyhaven](https://polyhaven.com/textures) heruntergeladen. Diese haben ebenfalls eine sehr hohe Qualität und erlauben es sehr einfach realistische Oberflächen zu erreichen, welche realistisch mit dem Licht in der Szene interagieren.
 
@@ -98,7 +98,7 @@ Damit meine Bilder nicht für das gleiche Produkt immer gleich aussehen, sondern
 
 ### Erste Bildpaare
 
-Bei dem Experiment, welches auf folgendem Bild dargestellt wird, konnte ich zum ersten Mal Bildpaare von verschiedenen Pflanzen generieren. Es fällt auf, dass die Pflanze bei beiden Bildern des Bildpaares in der gleichen Position mit derselben Ausrichtung ist. Dies hilft, um dem Modell das Training zu erleichtern. Die Kamera zeigt auch immer auf die Pflanze und hat den richtigen Zoom eingestellt, damit die Pflanze einen relativ grossen Teil des Bildes ausfüllt und trotzdem ganz ins Bild passt. Beim zweiten Bild fällt auf, dass der Raum um das Produkt herum hier noch nicht fertig modelliert ist.
+Bei dem Experiment, welches auf folgendem Bild dargestellt wird, konnte ich zum ersten Mal Bildpaare von verschiedenen Pflanzen generieren. Es fällt auf, dass die Pflanze bei beiden Bildern des Bildpaares in der gleichen Position mit derselben Ausrichtung ist. Die Kamera zeigt auch immer auf die Pflanze und hat den richtigen Zoom eingestellt, damit die Pflanze einen relativ grossen Teil des Bildes ausfüllt und trotzdem ganz ins Bild passt. Beim zweiten Bild fällt auf, dass der Raum um das Produkt herum hier noch nicht fertig modelliert ist.
 
 ![Experiment 19](images/experiment_19.jpg "Experiment 19")
 
@@ -127,7 +127,7 @@ Wie aus der Grafik ersichtlich, habe ich im Rahmen dieses Projekts Produktbilder
 
 ### Bilder auf SLURM-Cluster generieren
 
-Die Entscheidung Blender zu nutzen habe ich unter anderem getroffen, weil ich wusste, dass Blender einen extrem schnellen Renderer names Eevee besitzt, welcher Bilder praktisch in real-time rendern kann. Ein solcher renderer erlaubt es selbst auf einem Laptop innerhalb eines Tages einen sehr grossen Datensatz zu generieren. Leider hat sich herausgestellt, dass die Qualität des Eevee Renderers für meine Zwecke nicht gut genug ist, und ich stattdessen den deutlich leistungs-intensiveren Cycles Renderer benutzen musste. Nach einigem Optimieren konnte ich auf meinem Desktoprechner Bilder genügender Qualität in ca. 30 Sekunden pro Bild generieren. Dies machte es praktisch unmöglich auf meinem Desktop-PC die nötigen Trainingsbilder zu generieren, da ich meinen Rechner mehrere Wochen komplett hätte auslasten müssen.
+Die Entscheidung Blender zu nutzen habe ich unter anderem getroffen, weil ich wusste, dass Blender einen extrem schnellen Renderer names Eevee besitzt, welcher Bilder praktisch in real-time rendern kann. Ein solcher Renderer erlaubt es selbst auf einem Laptop innerhalb eines Tages einen sehr grossen Datensatz zu generieren. Leider hat sich herausgestellt, dass die Qualität des Eevee Renderers für meine Zwecke nicht gut genug ist, und ich stattdessen den deutlich leistungs-intensiveren Cycles Renderer benutzen musste. Nach einigem Optimieren konnte ich auf meinem Desktoprechner Bilder genügender Qualität in ca. 30 Sekunden pro Bild generieren. Dies machte es praktisch unmöglich auf meinem Desktop-PC die nötigen Trainingsbilder zu generieren, da ich meinen Rechner mehrere Wochen komplett hätte auslasten müssen.
 
 Um dieses Problem zu lösen, habe ich mich entschieden die Bilder auf dem SLURM-CLuster des i4DS der FHNW zu generieren. Dies bedeutete jedoch auch, dass ich Blender auf dem Compute-Cluster laufen lassen musste. Dies hat sich als relativ schwierig herausgestellt, weil ich keinen Singularity Container mit der richtigen Version von Blender finden konnte. Nach einiger Recherche und zahlreichen Versuchen habe ich einen [Docker Container](https://github.com/linuxserver/docker-blender) gefunden, welcher die richtige Version (3.6.5) von Blender nutzte und auf dem Cluster tatsächlich lief. Bei diesem ganzen Prozess stand mir Moritz immer wieder zur Seite und half mir enorm weiter.
 
@@ -161,7 +161,7 @@ Zum Vergleich der Modelle verwende ich den Mean Squared Error (MSE) auf den Vali
 
 Die Idee hinter diesem Modell war es, dass es mehr, oder zumindest schneller die Aufgabe lernen wird, falls es mehrere verwandte Aufgaben lernen muss. Deshalb wird hier im Output nicht nur ein RGB-Bild mit 3 Layer, sondern ein gleich 4 Bilder vorhergesagt: Es werden das Produktbild (3 Layer), die Produkt-Maske (1 Layer, weil Schwarz-Weiss), die Entfernung zur Kamera (1 Layer, weil Schwarz-Weiss) und die Oberflächen-Normalen (3 Layer) vorhergesagt. Dies gibt uns also insgesamt 8 Channels im Output.
 
-Bei einem solchen Modell, ist es wichtig, dass in form der Data Augmentation keine geometrischen Transformationen durchgeführt werden, da dies die Oberflächen-Normalen verfälschen würde. Um die Vergleichbarkeit in dieser Arbeit zu gewährleisten habe ich deshalb in der gesamten Arbeit auf geometrische Transformationen in der Data Augmentation verzichtet.
+Bei einem solchen Modell, ist es wichtig, dass bei der Data Augmentation keine geometrischen Transformationen durchgeführt werden, da dies die Oberflächen-Normalen verfälschen würde. Um die Vergleichbarkeit in dieser Arbeit zu gewährleisten habe ich deshalb in der gesamten Arbeit auf geometrische Transformationen in der Data Augmentation verzichtet.
 
 ![U-Net multi-task learning](images/u_net_multi_task.png "U-Net multi-task learning")
 
@@ -205,7 +205,7 @@ Wie man auf diesen Bildern sehen kann, kann das Modell auf echten Bildern nicht 
 
 Ein Beispiel vom Multi-Task Modell gibt uns noch etwas mehr Informationen dazu, was schon korrekt funktioniert und was nicht. Wie man hier klar sehen kann, funktioniert tatsächlich die Unterscheidung zwischen Vordergrund und Hintergrund nicht korrekt, denn auch auf der Maske macht das Modell diesen Fehler. Wie uns jedoch die Normalen zeigen, versteht das Modell das Produkt ziemlich gut. Die Normalen der Spritzkanne sehen nämlich ziemlich korrekt aus.
 
-Was könnte denn nun der Grund sein, warum das Modell den Hintergrund nicht gut vom Vordergrund unterscheiden kann? Ich nehme an, dass das Modell gelernt hat, dass die Texturen im Hintergrund eine höhere Auflösung und weniger Flache Oberflächen haben, als die Texturen des Produktes. Dies könnte daran liegen, dass ich nur ein paar wenige sehr hoch aufgelöste Texturen für den modellierten Raum verwendet habe. Das Hinzufügen von mehr und flacheren Texturen im Hintergrund bei der Bildgenerierung könnte dem Modell helfen, um die Abtrennung vom Hintergrund auf echten Bildern korrekt vornehmen zu können.
+Was könnte denn nun der Grund sein, warum das Modell den Hintergrund nicht gut vom Vordergrund unterscheiden kann? Ich nehme an, dass das Modell gelernt hat, dass die Texturen im Hintergrund eine höhere Auflösung und weniger flache Oberflächen haben, als die Texturen des Produktes. Dies könnte daran liegen, dass ich nur ein paar wenige sehr hoch aufgelöste Texturen für den modellierten Raum verwendet habe. Das Hinzufügen von mehr und flacheren Texturen im Hintergrund bei der Bildgenerierung könnte dem Modell helfen, um die Abtrennung vom Hintergrund auf echten Bildern korrekt vornehmen zu können.
 
 ### Ausblick
 
@@ -225,19 +225,19 @@ Sollte es möglich sein, hochwertige Produktbilder zu generieren, stellt sich na
 
 | ID   | Lernziel                                                                | Erfüllung    |
 | :--- | :---------------------------------------------------------------------- | ------------ |
-| K2L3 | Ein Data Science Projekt ausführen können                               | Beschreibung |
-| K2L4 | Code systematisch strukturieren und testen können                       | Beschreibung |
-| K3L2 | Strategie, Methoden und Resultaten analysieren und evaluieren können    | Beschreibung |
-| K3L3 | Code dokumentieren und versionieren können                              | Beschreibung |
-| K4L3 | Projekt durchführen können                                              | Beschreibung |
-| K6L2 | Kritisch Denken und Handeln                                             | Beschreibung |
-| K7L2 | Lernbereitschaft zeigen                                                 | Beschreibung |
-| K5L1 | Mit Beteiligten kommunizieren und zusammenarbeiten können               | Beschreibung |
-| K3L4 | Reproduzierbarkeit und Deployment sicherstellen können                  | Beschreibung |
-| K6L1 | Kreativ sein und innovativ denken können                                | Beschreibung |
-| K7L1 | Zuverlässig sein und Eigeninitiative und Motivation zeigen              | Beschreibung |
-| K7L3 | Reflexionsfähigkeit zeigen                                              | Beschreibung |
-| K5L2 | Zwischen- und Endresultate mündlich und schriftlich präsentieren können | Beschreibung |
+| K2L3 | Ein Data Science Projekt ausführen können                               | Ich habe verschiedene Modelle aufgrund einer Metrik auf dem Validierungsdatensatz verglichen. Die Qualität der Daten habe ich jedoch nicht quantitativ beurteilt. |
+| K2L4 | Code systematisch strukturieren und testen können                       | Eingabefehler werden abgewickelt und Logging wurde bei der Daten-Generierung und dem Modell training verwendet. Parameter können einfach durch config Dateien festgelegt werden.  |
+| K3L2 | Strategie, Methoden und Resultaten analysieren und evaluieren können    | Während der Arbeit fand ich zum Beispiel heraus, dass der Eevee Renderer nicht gut genug war ([Bilder auf SLURM-Cluster generieren](#bilder-auf-slurm-cluster-generieren)) und musste meinen Plan entsprechend anpassen. Auch im [Ausblick](#ausblick) werden die Resultate analysiert. |
+| K3L3 | Code dokumentieren und versionieren können                              | Die Repositories wurden veröffentlicht. |
+| K4L3 | Projekt durchführen können                                              | Das [Challenge X Exposé](challenge_x_exposé.pdf) beschreibt die originale Idee und die Umsetzung wurde in diesem Report dokumentiert. |
+| K6L2 | Kritisch Denken und Handeln                                             | Durch die Meetings mit den Coaches konnten einige Probleme diskutiert und kritisch hinterfragt werden. Die Ergebnisse wurden im Portfolio kritisch und offen diskutiert. |
+| K7L2 | Lernbereitschaft zeigen                                                 | Schon vor dem Start des Projektes habe ich mit dem Rendern der Produktbilder angefangen, um die entsprechende Wissenslücke früh und proaktiv zu schliessen. |
+| K5L1 | Mit Beteiligten kommunizieren und zusammenarbeiten können               | Portfolio wurde gemäss Diskussion mit Coaches aufgebaut und Meetings wurden regelmässig und sinnvoll durchgeführt. |
+| K3L4 | Reproduzierbarkeit und Deployment sicherstellen können                  | Python Dependencies werden mit Pipenv installiert und Machine Learning Experimente wurden auf [Weights & Biases](https://api.wandb.ai/links/tez4/haj73uoz) hochgeladen. |
+| K6L1 | Kreativ sein und innovativ denken können                                | Trainingsdaten wurden selbst mit Blender generiert. |
+| K7L1 | Zuverlässig sein und Eigeninitiative und Motivation zeigen              | Ich habe die Termine eingehalten und eine Arbeit zu einem Thema durchgeführt, welches ich noch nicht kannte. |
+| K7L3 | Reflexionsfähigkeit zeigen                                              | Über die gemachten Fehler wurde besonders im [Ausblick](#ausblick) reflektiert. |
+| K5L2 | Zwischen- und Endresultate mündlich und schriftlich präsentieren können | Die Verteidigung fand am 17.01.2024 statt. |
 
 ## Meeting Notizen
 
