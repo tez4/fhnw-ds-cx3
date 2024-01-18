@@ -8,3 +8,5 @@ The model training and documentation is done in the repository you are currently
 For more detailed information on the project, please refer to the following files:
 
 - [Portfolio](reports/Portfolio.md)
+- [Challenge X Exposé](reports/challenge_x_exposé.pdf)
+- [Weights & Biases Report](https://api.wandb.ai/links/tez4/haj73uoz)
