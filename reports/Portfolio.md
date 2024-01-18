@@ -110,14 +110,13 @@ Es können weitere Bilder mit zusätzlichen Informationen hinzugefügt werden, w
 
 ### Produktbild verbessern
 
-- Qualitätskriterien für Bilder
-- Die Bilder müssen mit Script nachbearbeitet werden, da Blender nicht fähig ist, die Bilder so zu generieren wie Joël sich das vorstellt.
-- Beschreibung was Bilder noch realistischer machen könnte (Grain, Blur, Focus, Surface Imperfections)
-- Finale Produktbilder und andere Bilder in Übersicht
+Mir war es ein besonderes Anliegen, dass das generierte Produktbild einem spezifischen Stil gerecht wird. Das Bild sollte folgende Kriterien erfüllen: Es sollte einen komplett weissen Hintergrund aufweisen und weder unter- noch überbelichtet sein. Eine nicht ganz symmetrische Beleuchtung von links und rechts war ebenfalls wichtig, um die Form des Produkts hervorzuheben, dabei sollte die Beleuchtung jedoch sehr weich sein. Zudem war ein leichter Schatten erwünscht, um dem Bild eine realistischere, physikalische Anmutung zu verleihen.
+
+Direkt in Blender war es für mich nicht möglich, Bilder zu erstellen, die all diesen Qualitätskriterien entsprachen. Ein komplett weisser Hintergrund war beispielsweise praktisch unerreichbar. Allerdings konnte ich die Bilder mit einem Skript so nachbearbeiten, dass die Ergebnisse meinen Vorstellungen entsprachen. Die finalen Produktbilder sind in der nachfolgenden Grafik dargestellt.
 
 ![Generierte Bilder](images/generated_images.png "Generierte Bilder")
 
-- Grösse des Finalen Datensatzes
+Wie aus der Grafik ersichtlich, habe ich im Rahmen dieses Projekts Produktbilder in drei unterschiedlichen Stilen generiert. Für die Modellierung in dieser Arbeit habe ich mich jedoch ausschliesslich auf den ersten Stil konzentriert. Insgesamt wurden 16'048 Bilder generiert, eine Zahl, die nur dank der Nutzung des SLURM-Clusters erreicht werden konnte. Auf diese Ressource und ihre Bedeutung für das Projekt werde ich im nächsten Abschnitt näher eingehen. Zusätzlich zu den generierten Bildern habe ich auch 24 echte Bilder aufgenommen, um das Modell anhand realer Beispiele testen zu können.
 
 | Datensatz    | Anzahl |
 | :----------- | -----: |
