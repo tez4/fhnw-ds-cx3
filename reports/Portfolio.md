@@ -183,8 +183,7 @@ Dies ist ein Beispiel, bei welchem das Modell einen sehr offensichtlichen Fehler
 
 ### pix2pix Modell trainieren
 
-- Versuch das Modell durch das Nutzen von einem Discriminator zu verbessern
-- [pix2pix Paper](https://arxiv.org/abs/1611.07004)
+In einem nächsten Schritt habe ich ein pix2pix Modell trainiert. Dieses besteht wie bisher aus einem U-Net als Generator und zusätzlich aus einem PatchGAN als Discriminator. Details dazu sind im [pix2pix Paper](https://arxiv.org/abs/1611.07004). Der Discriminator lernt die Target-Bilder von den Output-Bildern zu unterscheiden. Der Schätzfehler fliesst dann als Adversarial Loss in den Generator Loss ein.
 
 ![Pix2Pix](images/pix2pix.png "Pix2Pix")
 
@@ -197,13 +196,17 @@ Dies ist ein Beispiel, bei welchem das Modell einen sehr offensichtlichen Fehler
 
 ### Qualitative Ergebnisse
 
+Die von mir aufgenommenen echten Bilder habe ich aus Zeitgründen nur qualitativ und nicht quantitativ bewertet. Dies war hier auch noch gar nicht nötig, weil aufgrund der Ergebnisse schnell klar wird, dass die Resultate noch nicht zufriedenstellend sind.
+
 ![Predictions on Real Images](images/real_image_test.png "Predictions on Real Images")
 
-- Auf echten Bildern kann das Modell nicht korrekt zwischen Hintergrund und Vordergrund unterscheiden
+Wie man auf diesen Bildern sehen kann, kann das Modell auf echten Bildern nicht korrekt zwischen dem Vordergrund und dem Hintergrund unterscheiden. Generell wird das Produkt korrekt ausgeschnitten, jedoch werden teilweise Teile des Hintergrunds nicht ausgeschnitten.
 
 ![Filter Prediction Example](images/real_image_filters.png "Filter Prediction Example")
 
-- Abgesehen von den Stellen, an denen das Modell nicht korrekt unterscheiden kann, sieht es auf allen Masken gut aus.
+Ein Beispiel vom Multi-Task Modell gibt uns noch etwas mehr Informationen dazu, was schon korrekt funktioniert und was nicht. Wie man hier klar sehen kann, funktioniert tatsächlich die Unterscheidung zwischen Vordergrund und Hintergrund nicht korrekt, denn auch auf der Maske macht das Modell diesen Fehler. Wie uns jedoch die Normalen zeigen, versteht das Modell das Produkt ziemlich gut. Die Normalen der Spritzkanne sehen nämlich ziemlich korrekt aus.
+
+Was könnte denn nun der Grund sein, warum das Modell den Hintergrund nicht gut vom Vordergrund unterscheiden kann? Ich nehme an, dass das Modell gelernt hat, dass die Texturen im Hintergrund eine höhere Auflösung und weniger Flache Oberflächen haben, als die Texturen des Produktes. Dies könnte daran liegen, dass ich nur ein paar wenige sehr hoch aufgelöste Texturen für den modellierten Raum verwendet habe. Das Hinzufügen von mehr und flacheren Texturen im Hintergrund bei der Bildgenerierung könnte dem Modell helfen, um die Abtrennung vom Hintergrund auf echten Bildern korrekt vornehmen zu können.
 
 ### Ausblick
 
@@ -221,7 +224,7 @@ Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 - Diversität der Bilder weiter erhöhen durch weitere Bilder nicht direkt nur vor Wand, sondern auch vor Schrank, Fussliste.
 - Bilder mit mehr verschiedenen Hintergründen generieren. Dabei auch Weisse und Flache Hintergründe verwenden.
 - Realismus der Bilder weiter erhöhen
-- Nachbearbeitung hinzufügen. Korn der Kamera / gewisse Unschärfe und Surface imperfections (Oberflächenmängel).
+- Nachbearbeitung hinzufügen. Korn der Kamera / gewisse Unschärfe und Surface imperfections (Oberflächenmängel) / Kompressionsartefakte.
 - Weitere Objekte im Raum, um Licht evtl. zu beeinflussen.
 - Bessere Assets verwenden, welche Texturen mit Tiefe haben.
 - weitere Metriken um Modelle besser vergleichen zu können. (Schärfe, Segmentierung, ...)
@@ -233,7 +236,7 @@ Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
 
 | ID   | Lernziel                                                                | Erfüllung    |
 | :--- | :---------------------------------------------------------------------- | ------------ |
-| K2L3 | Ein Data Science Projekt ausführen können.                              | Beschreibung |
+| K2L3 | Ein Data Science Projekt ausführen können                               | Beschreibung |
 | K2L4 | Code systematisch strukturieren und testen können                       | Beschreibung |
 | K3L2 | Strategie, Methoden und Resultaten analysieren und evaluieren können    | Beschreibung |
 | K3L3 | Code dokumentieren und versionieren können                              | Beschreibung |
