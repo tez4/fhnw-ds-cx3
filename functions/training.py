@@ -105,11 +105,13 @@ class Trainer:
                 fake_output = self.discriminator(inputs, outputs.detach())
                 loss_discriminator_fake = self.criterion_discriminator(fake_output, torch.zeros_like(fake_output))
 
+                adversarial_loss = self.criterion_discriminator(fake_output, torch.ones_like(fake_output))
+
                 loss_discriminator = (loss_discriminator_real + loss_discriminator_fake) / 2
                 loss_discriminator.backward()
                 self.optimizer_discriminator.step()
 
-                loss += loss_discriminator.detach() * self.config['loss_lambda']
+                loss += adversarial_loss.detach() * self.config['loss_lambda']
 
             loss.backward()
             self.optimizer.step()
