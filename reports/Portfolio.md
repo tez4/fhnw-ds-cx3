@@ -192,7 +192,7 @@ In einem nächsten Schritt habe ich ein pix2pix Modell trainiert. Dieses besteht
 |       U-Net | 0.00169 |
 |     pix2pix | 0.00172 |
 
-- Das Lambda verändern hatte keinen Effekt auf das quantitative Ergebnis.
+Das Hinzufügen eines Discriminators hat den Validation MSE nicht verbessert. Üblicherweise werden die Bilder beim Hinzufügen eines Discriminators schärfer, Ich konnte Qualitativ jedoch keinen Unterschied zu den Ergebnissen des U-Nets feststellen. Falls man dies genauer Untersuchen möchte, wäre hier sicherlich eine Metrik zum Messen der Schärfe des Resultates hilfreich.
 
 ### Qualitative Ergebnisse
 
@@ -210,25 +210,15 @@ Was könnte denn nun der Grund sein, warum das Modell den Hintergrund nicht gut 
 
 ### Ausblick
 
-Was hätte ich anders machen sollen?
+Bei diesem Projekt konnte ich viele wertvolle Erfahrungen sammeln und spannende Ergebnisse erzielen. Allerdings gibt es einige Aspekte, die ich in einem zukünftigen Projekt anders angehen würde. Zum Beispiel würde ich früher damit beginnen, Modelle zu trainieren und diese bereits in einem frühen Stadium mit echten Daten zu testen. Dadurch könnten die gewonnenen Erkenntnisse effektiver in die Bildgenerierung einfliessen. Zudem wäre es sinnvoll, für die realen Daten eine Ground-Truth-Maske zu erstellen, um quantitative Aussagen über die Leistungsfähigkeit des Modells auf echten Bildern treffen zu können. Hierfür würde sich beispielsweise der DICE-Score als Bewertungskriterium anbieten. Dies würde es ermöglichen, Anpassungen bei der Bildgenerierung auch quantitativ zu evaluieren.
 
-- Früher Modelle trainieren und auf echten Bildern testen, um Anpassungen an der Bildgenerierung vornehmen zu können.
-- Metrik auf den echten Daten nutzen (beispielsweise DICE auf Maske)
-- Bewertungskriterien für generierte Bilder definieren und diese in der Bildgenerierung berücksichtigen
-- Besserer Train-Test Split (Keine Objekte, Texturen und HDRIs zwischen Training und Test teilen)
-- Dokumentation früher beginnen und geupdatet halten
+Ein weiteres Problem stellte mein Ansatz für den Train-Test-Split dar. Hier hätte man das Risiko von Data Leakage verringern können, indem man zum Beispiel unterschiedliche Texturen für die Raummodellierung in den Input-Bildern der Trainings- und Testdatensätze verwendet hätte. Ähnliches gilt für die Auswahl der Produkte und HDRIs. Ein weiteres Ziel des Projekts war es, das Portfolio stets aktuell zu halten, was mir leider nicht in vollem Umfang gelungen ist.
 
-Wie könnte man diese Arbeit erweitern? Was wären die nächsten Schritte?
+In der begrenzten Zeit, die mir für dieses Projekt zur Verfügung stand, war es mir leider nicht möglich, all meine Ideen umzusetzen. Es gibt viele Ansätze, die potenziell zu besseren Ergebnissen führen könnten und die ich gerne getestet hätte oder die in zukünftigen Arbeiten erforscht werden könnten. Eine Möglichkeit wäre beispielsweise, ein Modell ohne die Verwendung von Surface Normals zu trainieren. Dies würde erlauben, geometrische Transformationen in der Data Augmentation zu nutzen, was durch eine verbesserte Datenanreicherung die Leistungsfähigkeit des Modells möglicherweise deutlich steigern könnte. Auch könnte die Vielfalt der generierten Bilder noch erheblich erhöht werden. Man könnte etwa die Produkte vor einer grösseren Bandbreite an Texturen rendern, einschliesslich einfacher weisser oder flacher Hintergründe sowie Wänden mit Oberflächenfehlern. Die Diversität der Hintergründe liesse sich weiter steigern, indem die Produkte nicht nur vor einer Wand, sondern beispielsweise auch vor Schränken oder Wänden mit Fussleisten platziert werden. Generell könnte der Realismus der generierten Bilder noch verbessert werden, zum Beispiel durch Nachbearbeitungen wie das Hinzufügen von Kamerakorn, leichte Unschärfen oder Bildkompressionsartefakte.
 
-- Modell ohne Surface Normals trainieren und dabei Data Augmentation aktivieren / erweitern
-- Diversität der Bilder weiter erhöhen durch weitere Bilder nicht direkt nur vor Wand, sondern auch vor Schrank, Fussliste.
-- Bilder mit mehr verschiedenen Hintergründen generieren. Dabei auch Weisse und Flache Hintergründe verwenden.
-- Realismus der Bilder weiter erhöhen
-- Nachbearbeitung hinzufügen. Korn der Kamera / gewisse Unschärfe und Surface imperfections (Oberflächenmängel) / Kompressionsartefakte.
-- Weitere Objekte im Raum, um Licht evtl. zu beeinflussen.
-- Bessere Assets verwenden, welche Texturen mit Tiefe haben.
-- weitere Metriken um Modelle besser vergleichen zu können. (Schärfe, Segmentierung, ...)
-- Unpaired image-to-image translation (CycleGAN, UNIT, StarGAN, ...)
+Auch bei den Modellen gibt es Verbesserungspotenzial. Die Beurteilung der Resultate ist momentan eher schwierig, und zusätzliche Metriken könnten hier hilfreich sein. Beispielsweise Metriken zur Beurteilung der Bildschärfe, Segmentierungsmetriken für die Produktmaske oder allgemein Metriken, die Bilder eher aus der Perspektive des menschlichen Auges bewerten, anstatt nur Pixelabweichungen zu messen. Es könnte auch lohnenswert sein, eine ganz andere Modellart zu erproben, wie etwa Unpaired Image-to-Image Translation. Hierbei könnten Modellarchitekturen wie UNIT oder StarGAN interessant sein.
+
+Sollte es möglich sein, hochwertige Produktbilder zu generieren, stellt sich natürlich auch die Frage nach den Implikationen eines solchen Modells und wie es angewendet werden kann und sollte.
 
 ![Ceci n'est pas un produit.](images/magritte_comment.png "Ceci n'est pas un produit")
 
